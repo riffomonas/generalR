@@ -19,7 +19,9 @@ title: generalR
 
 	<li><a href="01_session.html">Lyme disease: Session 1</a></li>
 	<ul>
-		<li></li>
+		<li>Plotting continuous data vs continuous data</li>
+		<li>Manipulating aesthetics</li>
+		<li>Mapping data to aesthetics</li>
 	</ul>
 
 	<li><a href="02_session.html">Lyme disease: Session 2</a></li>

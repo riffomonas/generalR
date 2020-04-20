@@ -1,3 +1,6 @@
+6\. There are many ways to manipulate the colors of our plots. We talked about named color and using hexadecimal codes. Color palettes have been developed including the [`wesanderson`](https://github.com/karthik/wesanderson) and [`beyonce`](https://github.com/dill/beyonce) palettes.
+
+
 Plan:
 * Build analysis work up around each dataset that emphasizes a different part with each sweep through a new dataset
 * Datasets
