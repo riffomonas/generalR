@@ -6,7 +6,7 @@ title: generalR
 <div class="index">
 	<h2>generalR</h2>
 
-	<p>These are instructional materials to help people learn to use R. You can download the files that go with these materials from the <a href="https://github.com/riffomonas/generalR_data/releases/latest">raw_data GitHub repository</a>. If you would like to contribute to the project or flag any issues that you think need to be addressed, please feel free to file a pull request or start an issue on the <a href="https://github.com/riffomonas/generalR">generalR GitHub repository</a>. The overall philosophy is to give learners the minimum that they need to get going and to teach them the material in a way that most R users learned the material (i.e. not from a book but by hacking their way to success).</p>
+	<p>These are instructional materials to help people learn to use R. You can download the files that go with these materials from the <a href="https://github.com/riffomonas/generalR_data/releases/latest">generalR data repository</a> on GitHub. If you would like to contribute to the project or flag any issues that you think need to be addressed, please feel free to file a pull request or start an issue on the <a href="https://github.com/riffomonas/generalR">generalR GitHub repository</a>. The overall philosophy is to give learners the minimum that they need to get going and to teach them the material in a way that most R users learned the material (i.e. not from a book but by hacking their way to success).</p>
 
 <ol start="0">
 	<li><a href="00_session.html">Introduction</a></li>
