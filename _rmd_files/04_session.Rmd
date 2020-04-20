@@ -5,8 +5,11 @@ output: markdown_document
 ---
 
 ## Topics
-*
-
+* What is a (tidy) data frame?
+* Understanding the structure of our data frame
+* Data types
+* Counting data
+* Summarizing data frames
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
@@ -24,13 +27,20 @@ opts_chunk$set("fig.show" = "hold")
 opts_chunk$set("fig.width" = 7)
 ```
 
-The line plot that we made in Session 1 was pretty compelling, right? The United States is a big place geographically and in its population. What does it look like in the states we are most concerned about? We've been playing with visualizing data without actually understanding much about the data we are working with. To answer the state-level question, we need to better understand our data frame.
+## What is a (tidy) data frame?
 
-Previously we saw this chunk of code
+Before we go much further, it would help to define what we mean by a "data frame". A data frame is central to the concept of the tidyverse. You can think of it as the data in a spreadsheet. It is a table where each row represents a different observation and each column is a different description of that observation. Each observation has the same number of descriptors and the descriptor is the same type (e.g. text, numerical, logical) across all of the observations. For example, in the Lyme disease data, we might have a different row for each state and year. We would then have columns to record the year, state, count, and possibly other variables. This format is "tidy". Alternatively, we could have each row represent a state and each column a different year's count. For most questions, we'd consider this to be a wide, non-tidy format. If you think about our aesthetics from the previous discussion, you'll recall that we map columns of a data frame to a specific aesthetic. We can't map multiple columns to one aesthetic. For example, all the values we want to plot on the y-axis need to be in the same column. Later we'll discuss how to make a wide data frame tidy and how to make a tidy data frame wide for those cases where it is necessary.
+
+
+## Understanding the structure of our data frame
+The line plot that we made in Session 1 was pretty compelling, right? The United States is a big place and has a large population. What does it look like in the states we are most concerned about? We've been playing with visualizing data without actually understanding much about the data we are working with. To answer the state-level question, we need to better understand our data frame.
 
 ```{r}
+library(tidyverse)
+library(lubridate)
+
 annual_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year) %>%
@@ -78,8 +88,171 @@ read_csv("project_tycho/US.23502006.csv",
 
 This opens a window that looks like a spreadsheet that you can only view, but cannot edit.
 
-* Need to talk about...
-  * variable types
-  * count / summarizing data in a column
-  * setting variable types
-  * renaming column names
+A final approach is brute force. We can use the `print` function to set the number of rows to report by adjusting the `n` argument. Setting `n=Inf` will return all of the rows
+
+```{r}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	print(n=5)
+```
+
+Similarly, you can set `width=Inf` to see all of the columns
+
+```{r, eval=FALSE}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	print(width=Inf)
+```
+
+
+## Data types
+Previously, we used `glimpse` to get a compact report of the data in our data frame. In the output we saw a variety of types...
+
+* `chr` - character or text
+* `dbl` - double / numeric data with a decimal (default numeric format)
+* `date` - date
+* `lgl` - logical (`TRUE` and `FALSE`)
+
+Other types we might see later include integer (count data), numeric (generic number data), datetime (date and time), time, and factor (categorical data). Depending on the type of data in the column, we may be able to use certain functions to perform analyses. For example, using `mean` on a character variable doesn't make sense, but it does for a double variable.
+
+It is possible to convert back and forth between variable types using functions that start `as.`. Often this is perilous because it may not be easy to predict how the conversion will work. Consider the following examples
+
+```{r}
+x <- c(0, 1, 2, 3, 4)
+x
+```
+
+```{r}
+as.character(x)
+```
+
+```{r}
+as.logical(x)
+```
+
+```{r}
+as.logical(x) %>% as.character()
+```
+
+```{r}
+as.logical(x) %>% as.numeric()
+```
+
+```{r}
+as.character(x) %>% as.logical()
+```
+
+```{r}
+as.logical(x) %>% as.character() %>% as.logical()
+```
+
+```{r}
+as.numeric(c("a", "b", "c"))
+```
+
+As you can see, it's best to keep these types straight.
+
+One special data type that causes confusion is `factor`. An R `factor` allows you to represent categorical data. For example, if you wanted to represent "male" and "female" subjects or different religious denominations. Of course, you could represent those values as text data, but sometimes their order matters to the analysis or to the visualization. Then the data become ordinal. By default a factor takes its order from the alphanumeric order of the values in the variable.
+
+```{r}
+x <- c("male", "female", "other")
+factor(x)
+```
+
+That output shows us that our factor has three levels - "female", "male", and "other". Because "female" precedes "male" and "other", alphabetically, that is the order the `factor` function uses to define the function. Alternatively, we can set the order using the `levels` argument
+
+```{r}
+x <- c("male", "female", "other")
+factor(x, levels=c("other", "male", "female"))
+```
+
+We'll try to keep our use of factors to a minimum. Being aware of them makes it easier to generate plots where we want the data depicted in a specific order.
+
+
+## Counting data
+
+Another tool we have for understanding the structure of a data frame is to use the `count` function. This function is useful when we have a column that is a character type. It counts the number of times each value in the column appears in that column. For example, if I wasn't sure which column contained the state name, I could do this over and over for each column
+
+```{r}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	count(Admin1Name)
+```
+
+Alternatively, perhaps I'm not sure if data from Canada are included in this dataset
+
+```{r}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	count(CountryName)
+```
+
+Looks like it's all from the United States.
+
+
+## Summarizing data frames
+
+When we have a data frame that has columns with continuous data, it can be helpful to get a summary of the data. We can get R's summary of our data frame with the `summary` function
+
+```{r}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	summary()
+```
+
+The output can be a bit painful to wade through. For character data, the output of `summary` tells us that it was character data and the number of values in the data frame. For double and date data, we get the five cardinal values and the mean across the observations. For logical data we get a count of the number of `TRUE`, `FALSE`, and `NA` observations. This view is useful for identifying values that don't make sense. For example if we had a variable for height and it was negative, we'd want to note that and fix the value later.
+
+
+## Questions
+
+1\. Thinking of the types of data you interact with regularly, what would you represent as a logical, character, double, factor, date?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+* logical: minor? eligible for social security? left-handed?
+* character: name, school
+* double: age, weight, height
+* factor: color, income class, state
+* date: birth day, anniversary, due dates
+</div>
+
+2\. If we left out the `col_type=cols(PartOfCumulativeCountSeries = col_logical())` argument, what data type would `PartOfCumulativeCountSeries` be? If we include it, what type is it? Can you think of why we need to specify the column type?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+
+If we leave this argument out it will be a double. With the argument it will be a logical. It will be useful for filtering the data frame to only retrieve those observations where the value is true.
+
+</div>
+
+
+3\. A column is a logical type and has 3 `TRUE` values and 2 `FALSE` values. When we calculate the mean for the column (using `mean`) we get a value of 0.6. Can you explain why?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+If you convert `TRUE` to a number it has the value of 1; the value of `FALSE` is 0.
+
+```{r}
+x <- c(TRUE, TRUE, TRUE, FALSE, FALSE)
+as.numeric(x)
+
+mean(x)
+sum(x)
+```
+
+The mean value for a logical variable tells us the fraction of observations where the value was `TRUE`.
+</div>
+
+
+4\. How do I view all of the rows of the data frame that contains the number of times each "state" appear in the data frame?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+read_csv("project_tycho/US.23502006.csv",
+		col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	count(Admin1Name) %>%
+	print(n=Inf)
+```
+
+</div>

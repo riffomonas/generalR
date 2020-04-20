@@ -36,7 +36,11 @@ title: generalR
 
 	<li><a href="04_session.html">Lyme disease: Session 4</a></li>
 	<ul>
-		<li></li>
+		<li>What is a (tidy) data frame?</li>
+		<li>Understanding the structure of our data frame</li>
+		<li>Data types</li>
+		<li>Counting data</li>
+		<li>Summarizing data frames</li>
 	</ul>
 
 	<li><a href="05_session.html">Lyme disease: Session 5</a></li>
