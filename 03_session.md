@@ -5,12 +5,15 @@ output: markdown_document
 ---
 
 ## Topics
-*
+* The `+` operator
+* Tracking down the source of errors
 
 
 
 
-We haven't commented on this yet, but within this code chunk we are using to make plots, we are using the `+` sign to add various elements to a plot. As we go through this series, we will find other things that we can add to vary the look of a plot. Perhaps you've already considered this, but what if we'd like to have a line that shows the points? We can use both the `geom_line` and `geom_point` function calls
+## The `+` operator
+
+Within the code chunk we are using to make plots, we are using the `+` sign to add various elements to a plot. As we go through this series, we will find other things that we can add to vary the look of a plot. Perhaps you've already considered this, but what if we'd like to have a line that shows the points? We can use both the `geom_line` and `geom_point` function calls
 
 
 ```r
@@ -30,12 +33,15 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
 <img src="assets/images/03_session//unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="504" />
+
+
+## Tracking down errors
 
 This can also come in handy for debugging. It's important to remember that we don't have to run the entire code chunk at once. Let's assume that I have the following code chunk that produces an error.
 
@@ -47,8 +53,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(limits=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -131,8 +137,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -140,12 +146,54 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 Wonderful, it works! At this point, if we got another error, then we would continue with the strategy of adding lines until we hit the error and proceeding. Something else you may notice if you are using Rstudio is that a red circle with an "x" in it will appear to the left of your code to let you know there is a problem. Sometimes if you highlight over the circle you will get a meaningful message. In general, starting from the top of the offending code block and working to the bottom will result in the best outcome.
 
-One final note about running your code and debugging is that if your prompt ever turns from a `>` to a `+` then you've probably left out a parenthese, bracket, brace, or quote mark. To get back to the correct prompt, simultaneously press the `Control` and `c` keys. In Rstudio you can also press the escape key.
+One final note about running your code and debugging is that if your prompt ever turns from a `>` to a `+` then you've probably left out a parentheses, bracket, brace, or quote mark. To get back to the correct prompt, simultaneously press the `Control` and `c` keys. In Rstudio you can also press the escape key.
 
-Questions
-* Make the color of the line red and the color of the plotting symbols blue. What do you notice if you switch the order of the `geom_line` and `geom_point` functions?
-* Without looking at the other code chunks we've run, see if you can debug the following code chunk using the strategy we outlined above. You should find four typographical errors.
+## Questions
+1\. Make the color of the line red and the color of the plotting symbols blue. What do you notice if you switch the order of the `geom_line` and `geom_point` functions?
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+`geom_line` then `geom_point`...
+
+
+```r
+ggplot(annual_counts, aes(x=year, y=count)) +
+	geom_line(color="red", size=2) +
+	geom_point(color="blue", size=3) +
+	scale_y_continuous(limits=c(0,NA)) +
+	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
+	labs(x="Year",
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
+	theme_classic()
+```
+
+<img src="assets/images/03_session//unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="504" />
+
+`geom_point` then `geom_line`...
+
+
+```r
+ggplot(annual_counts, aes(x=year, y=count)) +
+	geom_point(color="blue", size=3) +
+	geom_line(color="red", size=2) +
+	scale_y_continuous(limits=c(0,NA)) +
+	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
+	labs(x="Year",
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
+	theme_classic()
+```
+
+<img src="assets/images/03_session//unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="504" />
+
+The order of the function calls determines the order of the plotting objects.
+</div>
+
+2\. Without looking at the other code chunks we've run, see if you can debug the following code chunk using the strategy we outlined above. You should find four typographical errors.
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 
 ```r
 ggplot(annual_counts, aes(x=year, y=count)) +
@@ -159,5 +207,34 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	theme_classic()
 ```
 
+</div>
 
-* In the data directory is a file called, "US.430397002.csv", which contains data for West Nile Virus. Use that file to generate a line plot showing the number of WNV infections in the US over time.
+3\. At [this link](https://raw.githubusercontent.com/riffomonas/generalR_data/master/project_tycho/US.430397002.csv) are data from Project Tycho for West Nile Virus. Save the data at that link as " `US.430397002.csv` in the `project_tycho` directory. Use those data to generate a line plot showing the number of WNV infections in the US over time.
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+
+```r
+library(tidyverse)
+library(lubridate)
+
+annual_counts <- read_csv("project_tycho/US.430397002.csv",
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	filter(PartOfCumulativeCountSeries) %>%
+	mutate(year = year(PeriodStartDate+7)) %>%
+	group_by(year) %>%
+	summarize(count = max(CountValue))
+
+ggplot(annual_counts, aes(x=year, y=count)) +
+	geom_line() +
+	geom_point() +
+	scale_y_continuous(limits=c(0,NA)) +
+	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
+	labs(x="Year",
+		y="Number of cases",
+		title="The number of West Nile Virus cases has been rising since 2003") +
+	theme_classic()
+```
+
+<img src="assets/images/03_session//unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="504" />
+</div>

@@ -11,27 +11,27 @@ title: generalR
 <ol start="0">
 	<li><a href="00_session.html">Introduction</a></li>
 	<ul>
+	</ul>
+
+	<li><a href="01_session.html">Lyme disease: Session 1</a></li>
+	<ul>
 		<li>Learning to analyze data is empowering</li>
 		<li>R is expressive</li>
 		<li>R isn't just for statistics</li>
 		<li>Figuring things out</li>
 	</ul>
 
-	<li><a href="01_session.html">Lyme disease: Session 1</a></li>
+	<li><a href="02_session.html">Lyme disease: Session 2</a></li>
 	<ul>
 		<li>Plotting continuous data vs continuous data</li>
 		<li>Manipulating aesthetics</li>
 		<li>Mapping data to aesthetics</li>
 	</ul>
 
-	<li><a href="02_session.html">Lyme disease: Session 2</a></li>
-	<ul>
-		<li></li>
-	</ul>
-
 	<li><a href="03_session.html">Lyme disease: Session 3</a></li>
 	<ul>
-		<li></li>
+		<li>The `+` operator</li>
+		<li>Tracking down the source of errors</li>
 	</ul>
 
 	<li><a href="04_session.html">Lyme disease: Session 4</a></li>
