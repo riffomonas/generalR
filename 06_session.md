@@ -5,21 +5,73 @@ output: markdown_document
 ---
 
 ## Topics
-*
+* Finding inspiration
+* Specifying variable types with `read_csv`
+* `selecting`-ing columns from a data frame
+* Renaming columns in a data frame
 
 
 
+## Finding inspiration
 
-For the next few sessions we're going to switch to a different dataset that includes weather observations from Ann Arbor, MI from October 1891 through the beginning of April 2020. I've frequently heard farmers in Southeastern Michigan tell me that we used to get a lot more snow, ponds used to stay frozen longer, and it's never been as warm as it has been in the last few summers. There's a lot of anecdotal evidence from these farmers that the climate is changing. I've been curious if we can see that in the data. Let's take a look!
+I've frequently heard old timers who live in Southeastern Michigan tell me that we used to get a lot more snow, ponds used to stay frozen longer, and it's never been as warm as it has been in the last few summers. There's a lot of anecdotal evidence from these farmers that the climate is changing.
 
-If you know the identifier for your local weather recording station, you can obtain data near where you live from NOAA who maintains the Daily Global Historical Climatology Network and makes the data available through https://www.ncdc.noaa.gov/cdo-web/search. My local weather station with the most data is located on the north side of the University of Michigan campus and has the code "USC00200230". The data we'll use is from that weather station and includes temperature and precipitation data going back to 1891. You can get an overview of the data available at https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00200230/detail. I've put a `comma-separated values` (CSV) version of the file in your `noaa` directory. We'll load the `tidyverse` package and read in the data as `aa_weather`
+I've also been inspired by a few recent data visualizations and wondered what they would look like for various places I've lived. These popular visuals were generated using global average temperatures dating back to about 1850
 
+<div>
+<img src="http://blogs.reading.ac.uk/climate-lab-book/files/2018/05/globalcore.png" width="40%"/><a href="https://www.climate-lab-book.ac.uk/2018/warming-stripes/">Warming Stripes</a>
+</div>
+
+<div>
+<img src="http://blogs.reading.ac.uk/climate-lab-book/files/2016/05/spiral_optimized.gif" width="40%"/><a href="https://www.climate-lab-book.ac.uk/2016/spiralling-global-temperatures/">Spiralling global temperatures</a>
+</div>
+
+
+It's important to keep in mind that many visualizations are for a global average and that some places may be cooling while others are warming. I've been curious if we can see that in the data. For the next few sessions we're going to switch to a different dataset that includes weather observations from Ann Arbor, MI from October 1891 through the beginning of April 2020. Let's take a look at what has been happening in Ann Arbor over the past 130 years.
+
+If you know the identifier for your local weather recording station, you can obtain data near where you live from NOAA who maintains the [Daily Global Historical Climatology Network](https://www.ncdc.noaa.gov/cdo-web/search). My local weather station with the most data is located on the north side of the University of Michigan campus and has the code "USC00200230". The data we'll use is from that weather station and includes temperature and precipitation data going back to 1891. You can get an overview of the data available at the [station's summary page](https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00200230/detail). I've put a `comma-separated values` (CSV) version of the file in your `noaa` directory.
+
+
+## Specifying variable types with `read_csv`
+
+We'll start by loading the `tidyverse` and reading in the data frame for my local weather station.
 
 
 ```r
 library(tidyverse)
 
 read_csv('noaa/USC00200230.csv')
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   STATION = col_character(),
+##   NAME = col_character(),
+##   DATE = col_date(format = ""),
+##   DAPR = col_logical(),
+##   DASF = col_logical(),
+##   MDPR = col_logical(),
+##   MDSF = col_logical(),
+##   PRCP = col_double(),
+##   SNOW = col_double(),
+##   SNWD = col_logical(),
+##   TMAX = col_double(),
+##   TMIN = col_double(),
+##   TOBS = col_logical()
+## )
+```
+
+```
+## Warning: 70075 parsing failures.
+##  row  col           expected actual                   file
+## 1889 SNWD 1/0/T/F/TRUE/FALSE    0.0 'noaa/USC00200230.csv'
+## 1890 SNWD 1/0/T/F/TRUE/FALSE    0.0 'noaa/USC00200230.csv'
+## 1891 SNWD 1/0/T/F/TRUE/FALSE    0.0 'noaa/USC00200230.csv'
+## 1892 SNWD 1/0/T/F/TRUE/FALSE    0.0 'noaa/USC00200230.csv'
+## 1893 SNWD 1/0/T/F/TRUE/FALSE    0.0 'noaa/USC00200230.csv'
+## .... .... .................. ...... ......................
+## See problems(...) for more details.
 ```
 
 ```
@@ -47,6 +99,37 @@ read_csv('noaa/USC00200230.csv', guess_max = 10000)
 ```
 
 ```
+## Parsed with column specification:
+## cols(
+##   STATION = col_character(),
+##   NAME = col_character(),
+##   DATE = col_date(format = ""),
+##   DAPR = col_logical(),
+##   DASF = col_double(),
+##   MDPR = col_logical(),
+##   MDSF = col_double(),
+##   PRCP = col_double(),
+##   SNOW = col_double(),
+##   SNWD = col_double(),
+##   TMAX = col_double(),
+##   TMIN = col_double(),
+##   TOBS = col_logical()
+## )
+```
+
+```
+## Warning: 33801 parsing failures.
+##   row  col           expected actual                   file
+## 12510 TOBS 1/0/T/F/TRUE/FALSE    1.1 'noaa/USC00200230.csv'
+## 12511 TOBS 1/0/T/F/TRUE/FALSE    1.1 'noaa/USC00200230.csv'
+## 12512 TOBS 1/0/T/F/TRUE/FALSE    0.6 'noaa/USC00200230.csv'
+## 12513 TOBS 1/0/T/F/TRUE/FALSE    3.9 'noaa/USC00200230.csv'
+## 12514 TOBS 1/0/T/F/TRUE/FALSE    2.8 'noaa/USC00200230.csv'
+## ..... .... .................. ...... ......................
+## See problems(...) for more details.
+```
+
+```
 ## # A tibble: 46,650 x 13
 ##    STATION NAME  DATE       DAPR   DASF MDPR   MDSF  PRCP  SNOW  SNWD  TMAX
 ##    <chr>   <chr> <date>     <lgl> <dbl> <lgl> <dbl> <dbl> <dbl> <dbl> <dbl>
@@ -68,6 +151,30 @@ We see that `SNWD` is now a double or numeric variable. We can also turn off the
 
 ```r
 read_csv('noaa/USC00200230.csv', guess_max = Inf)
+```
+
+```
+## Warning: `guess_max` is a very large value, setting to `21474836` to avoid
+## exhausting memory
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   STATION = col_character(),
+##   NAME = col_character(),
+##   DATE = col_date(format = ""),
+##   DAPR = col_double(),
+##   DASF = col_double(),
+##   MDPR = col_double(),
+##   MDSF = col_double(),
+##   PRCP = col_double(),
+##   SNOW = col_double(),
+##   SNWD = col_double(),
+##   TMAX = col_double(),
+##   TMIN = col_double(),
+##   TOBS = col_double()
+## )
 ```
 
 ```
@@ -117,7 +224,7 @@ We saw a different syntax for `col_types` when we were working with the Project 
 
 ```R
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical()))
+	col_type=cols(PartOfCumulativeCountSeries = col_logical()))
 ```
 
 Instead of providing a code string like `"ccDdddddddddd"`, we could have been more explicit about the specific columns for each type.
@@ -190,6 +297,9 @@ read_csv('noaa/USC00200230.csv',
 ```
 
 All that to read in the data without an error :) Hopefully, you can appreciate the flexibility that `read_csv` gives you for specifying the type of data that you are reading in.
+
+
+## `selecting`-ing columns from a data frame
 
 Using our skills that we developed with the Project Tycho data we can begin to take a look at the structure of these data. We can see that there are 46,642 rows (46,642 days / 365 days/year ~ 128 years worth of data) and 12 columns. Some of these columns aren't very useful (e.g. `STATION` and `NAME` are the same value for every row) and some of them don't have much data (e.g. `DAPR`, `DASF`, `MDPR`, `MDSF` have 0% coverage). We can either remove those columns or we can select the columns we want to keep. To do either approach we can use the `select` function.
 
@@ -368,6 +478,9 @@ read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
 ## # … with 46,640 more rows
 ```
 
+
+## Renaming columns in a data frame
+
 I'm not a big fan of these column names. I have a few "rules" for column names...
 
 1. Names should be descriptive (e.g. `date`, not `x`)
@@ -451,30 +564,42 @@ aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
 We've done quite a bit here without really "doing anything". But we have! We've made the data easier to work with.
 
 
-Questions
-* What are the strengths and weaknesses of the following?
-  - `is_cumulative_count`
-  - `x`
-  - `height`
-  - `foo`
-  - `long`
-	- `color`
+## Questions
+
+1\. What are the strengths and weaknesses of the following variable/column names?
+- `is_cumulative_count`
+- `x`
+- `height`
+- `foo`
+- `temp_c`
+- `long`
+- `color`
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+- `is_cumulative_count` - good, albeit perhaps a little long
+- `x` - too generic
+- `height` - good, perhaps could include the units (e.g. height_cm)
+- `foo` - too generic
+- `temp_c` - good
+- `long` - too vague. Sort for longitude? A logical asking if something is "long"?
+- `color` - good
+</div>
 
 
-* Revisit the Project Tycho data that we worked with earlier. Can you write a pipeline consisting of `read_csv`, `select`, and `rename` to create a data frame that includes the period's end date, state, counts, and whether the counts are cumulative? Be sure to give meaningful column names and tell `read_csv`, the data type in each column
+2\. Revisit the Project Tycho data that we worked with earlier. Can you write a pipeline consisting of `read_csv`, `select`, and `rename` to create a data frame that includes the period's end date, state, counts, and whether the counts are cumulative? Be sure to give meaningful column names and tell `read_csv`, the data type in each column
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(
-						PeriodEndDate = col_date(),
-						PartOfCumulativeCountSeries = col_logical(),
-						Admin1Name = col_character(),
-						CountValue = col_integer())
-				) %>%
+		col_type=cols(PeriodEndDate = col_date(),
+			PartOfCumulativeCountSeries = col_logical(),
+			Admin1Name = col_character(),
+			CountValue = col_integer())) %>%
 	select(PeriodEndDate, PartOfCumulativeCountSeries, Admin1Name, CountValue) %>%
-	rename(
-		"period_end_date" = PeriodEndDate,
+	rename("period_end_date" = PeriodEndDate,
 		"part_of_cumulative_count_series" = PartOfCumulativeCountSeries,
 		"state" = Admin1Name,
 		"cases" = CountValue
@@ -497,3 +622,7 @@ read_csv("project_tycho/US.23502006.csv",
 ## 10 2008-10-18      FALSE                           WISCONSIN     2
 ## # … with 51,244 more rows
 ```
+</div>
+
+
+3\. Can you find a weather station with a long history of data from your favorite location?

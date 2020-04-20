@@ -54,7 +54,10 @@ title: generalR
 
 	<li><a href="06_session.html">Weather data: Session 6</a></li>
 	<ul>
-		<li></li>
+		<li>Finding inspiration</li>
+		<li>Specifying variable types with `read_csv`</li>
+		<li>`selecting`-ing columns from a data frame</li>
+		<li>Renaming columns in a data frame</li>
 	</ul>
 
 	<li><a href="07_session.html">Weather data: Session 7</a></li>
