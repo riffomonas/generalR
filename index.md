@@ -11,7 +11,10 @@ title: generalR
 <ol start="0">
 	<li><a href="00_session.html">Introduction</a></li>
 	<ul>
-		<li></li>
+		<li>Learning to analyze data is empowering</li>
+		<li>R is expressive</li>
+		<li>R isn't just for statistics</li>
+		<li>Figuring things out</li>
 	</ul>
 
 	<li><a href="01_session.html">Lyme disease: Session 1</a></li>
