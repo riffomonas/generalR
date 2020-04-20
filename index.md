@@ -45,7 +45,11 @@ title: generalR
 
 	<li><a href="05_session.html">Lyme disease: Session 5</a></li>
 	<ul>
-		<li></li>
+		<li>Raw data should stay raw</li>
+		<li>Heat maps</li>
+		<li>Simplifying our data frame with `filter`</li>
+		<li>Map maps</li>
+		<li>Taking stock</li>
 	</ul>
 
 	<li><a href="06_session.html">Weather data: Session 6</a></li>
