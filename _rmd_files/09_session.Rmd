@@ -1,0 +1,403 @@
+---
+layout: lesson
+title: "Session 9"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
+
+We have more than 46,000 rows of data in `aa_weather`. Even in graphical form, that's a lot to digest.
+
+```{r}
+aa_weather %>%
+	ggplot(aes(x=date, y=t_max_c)) +
+		geom_line()
+```
+
+There's way too much day-to-day variation to get a sense of the year-to-year variation. We need to do something to intelligently group the data. A lot of questions we might want to answer with these data involve grouping data that is similar and the summarizing the grouped data. For example,
+
+* Which year had the most precipitation?
+* How typical was the weather on my birth date?
+* What is the probability of rain on my birthday?
+* Which year has had the most precipitation?
+* What is the high or low temperature for each day of the year? Which year was it set?
+
+To answer each of these questions, we will need to group the data and then do some type of summary on the grouped data (e.g. `median`, `min`, `max`). The other set of tools we'll need for these particular questions is provided by the `lubridate` package, which we saw with the Project Typcho data. `lubridate` is part of the `tidyverse`. We used the `year` function to extract the year from the date data.
+
+As an aside, the date is one of those things that can be written [many different ways](https://xkcd.com/1179/). How do you write it? I was born on June 20, 1976. How do you most naturally write that date? 20 June 1976? 6/20/1976? 20/6/1976? 6/20/1976? There is a standard format that virtually no one outside of data science uses - ISO 8601. It is expressed as "YYYY-MM-DD". You'll notice that the date column follows this standard and so we need to convert our dates to the standard as well - "1976-06-20". If our data are nicely formatted, there's a lot of useful information that we can extract from that date. A handy [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf) is available to help you with formatting dates, extracting information, and other dates related goodies
+
+```{r}
+library(lubridate)
+
+birth_date <- "1976-06-20"
+year(birth_date) # year
+month(birth_date) # month
+day(birth_date) # day of the month
+wday(birth_date) # day of the week with 1 => Monday
+yday(birth_date) # Julian date
+week(birth_date) # week of the year
+```
+
+Let's find the year with the most precipitation. Take a moment and think to yourself what you would need to do to figure this out. Don't worry about the R syntax. Write it out in your own words, use pictures, whatever helps you think. Here's my thinking: I need to get the year for each observation in the data frame. Then I need to group the data by the year. Finally, I need to sum the `total_precip_mm` column within each year. You've seen all of these steps before with another application in the Project Tycho data, but we didn't discuss it in depth.
+
+The first step should sound most familiar. We need to generate a `year` column using the `mutate` and `year` functions
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	select(year, everything()) # this puts the year column first and then everything else
+```
+
+Now we need to group the data by the year. To do this we'll use the `group_by` function
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	select(year, everything()) # this puts the year column first and then everything else
+```
+
+This output doesn't look that different than when we ran it without the `group_by` function. If you look closely at the second line of output, you'll see that it indicates, "# Groups:   year [130]". It has grouped our data in to 130 groups - one for each year in the dataset.
+
+Finally, we need to sum the `total_precip_mm` column for each group (i.e. year). We will do this with the `summarize` and `sum` functions
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm))
+```
+
+Nice, eh?! We have a new data frame with the year and the total precipitation for the year as measured in millimeters. There are two things to mention here. First, for 1891 to 1896 we have `NA` values for `annual_precip_mm`. It's not clear to me whether an `NA` means missing data or no precipitation. We know that there were some records of precipitation in 1891 from the output of running `aa_weather` on its own at the R prompt. If we assume that `NA` means no data, then we can use a special argument to `sum` to treat `NA` values as zeros, `na.rm=TRUE`.
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE))
+```
+
+The data for 1891 started in October, which explains why it has relatively little precipitation. Again, whether to treat the `NA` values as zeroes really depends on what they represent for your data. For this dataset, I'm content to treat them as zeroes. I would like to get rid of the partial data for 1891 and 2020 with `filter`
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020) # note that != is the opposite of ==, i.e not equal to
+```
+
+Excellent! These data are sorted by year, how would we sort it by `annual_precip_mm`? We can use the `arrange` function
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	arrange(annual_precip_mm)
+```
+
+That does an ascending sort and shows that 1955, 1963, and 1934 were the dryest years. To do a descending sort, we need to include the `desc` function
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	arrange(desc(annual_precip_mm))
+```
+
+That shows 7 of the 10 wettest years were since 2000.
+
+We can also plot these data to get a sense of any trends in the data
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	ggplot(aes(x=year, y=annual_precip_mm)) +
+		geom_line()
+```
+
+It really does appear that total precipitation starts to move upwards after 1960.  We can make this more evident by adding a smoothed line through the data with `geom_smooth`
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	ggplot(aes(x=year, y=annual_precip_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+
+Gulp. Hopefully, this progression of our analysis makes sense. We identified and created an attribute that we wanted to group our data by using `mutate`, grouped the data by the year using `group_by`, and totaled the amount of precipitation for the year with `summarize`. This workflow is amazingly powerful.
+
+I should make one final point on this example. Previously, we discussed using functions to make our code DRY. We can also use variables to make our code DRY. In the last few code chunks, we've repeated a lot of the same code to generate the summary table. We should probably save that as a data frame and then do operations on that data frame.
+
+```{r}
+annual_precipitation <- aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020)
+
+annual_precipitation %>%
+	arrange(desc(annual_precip_mm))
+
+annual_precipitation %>%
+	ggplot(aes(x=year, y=annual_precip_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+
+
+Questions
+* Which years had the most snowfall? How do the trends in those data look?
+
+```{r}
+annual_snowfall <- aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_snowfall_mm = sum(snow_fall_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020)
+
+annual_snowfall %>%
+	arrange(desc(annual_snowfall_mm))
+
+annual_snowfall %>%
+	ggplot(aes(x=year, y=annual_snowfall_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+
+* Which months have the most precipitation?
+
+```{r}
+monthly_precipitation <- aa_weather %>%
+	mutate(month = month(date)) %>%
+	group_by(month) %>%
+	summarize(monthly_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(month != 1891 & month != 2020)
+
+monthly_precipitation %>%
+	arrange(desc(monthly_precip_mm))
+
+monthly_precipitation %>%
+	ggplot(aes(x=month, y=monthly_precip_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+
+Let's work on the second question of how typical the weather was on my birth date. To ease into this type of question, let's get the weather in Ann Arbor on the day I was born - June 20, 1976 or 1976-06-20.
+
+```{r}
+aa_weather %>%
+	filter(date == "1976-06-20")
+```
+
+That is a perfect Pat Schloss day! Cool and dry. Maybe there were a couple of fluffy clouds in the sky. I'd like to know how typical that day's temperature (low of 11.1 C and high of 24.4 C) and lack of rain fall are for June 20th or any other day of the year. What I'd like to do is group all of the data by the month and day and return the median weather data along with the 95% confidence interval for the weather observation on each day.
+
+As with anything in R, there are many ways to do this! Let's pause for a moment and think through our strategy.
+
+1. Extract the month and day for each date, create a new column for each
+2. Group the data by both the month and day
+3. Calculate the median high temperature for each month/day combination along with the 95% confidence interval for each.
+4. Filter to get the data for my birthday
+
+That should look pretty familiar. I want to emphasize that thinking through the strategy is the hard part of programming. If you can figure out how to break down a problem into steps, then you can largely google the rest or find examples of how to do each step.
+
+We'll start with creating a month and day column with `mutate`
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	select(month, day, everything())
+```
+
+That looks right. Now we want to group by those two new columns. Previously, we grouped by a single column. To group by two or more columns, we separate the variables with commas
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	group_by(month, day)
+```
+
+Now that we've grouped the data, we see the line, `# Groups:   month, day [366]`. We are now set to summarize the data
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	group_by(month, day) %>%
+	summarize(t_med_c = median(t_max_c))
+```
+
+Here we're using the `median` function to get the median value of `t_max_c` within the desired month and day combination. We can use any function in `summarize`, including those we create, as long as the functions return a single value. Other functions you'll find useful include `mean`, `sd`, `IQR`, `max`, `min`, `quartile`, and `n`. Similar to the `mutate` function, we can create additional columns in the `summarize` function by separating them by commas. Let's try this with the 2.5 and 97.5 percentiles using the `quantile` function and adding a column that indicates the number of obserations we have.
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	group_by(month, day) %>%
+	summarize(t_med_c = median(t_max_c),
+		t_lci_c = quantile(t_max_c, prob=0.025),
+		t_uci_c = quantile(t_max_c, prob=0.975),
+		n = n())
+```
+
+Here we get an error about `NA` values. Let's go ahead and ignore these in our calculations
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	group_by(month, day) %>%
+	summarize(t_med_c = median(t_max_c, na.rm=T),
+		t_lci_c = quantile(t_max_c, prob=0.025, na.rm=T),
+		t_uci_c = quantile(t_max_c, prob=0.975, na.rm=T),
+		n = n())
+```
+
+Cool, eh? Something you might notice in the output is that it looks like we are still workign with grouped data. This can cause problems down the road, so we should use `ungroup` to ungroup the data. We'll also assign this pipeline to a variable so we aren't copying the code over and over
+
+```{r}
+daily_temps <- aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	group_by(month, day) %>%
+	summarize(t_med_c = median(t_max_c, na.rm=T),
+		t_lci_c = quantile(t_max_c, prob=0.025, na.rm=T),
+		t_uci_c = quantile(t_max_c, prob=0.975, na.rm=T),
+		n = n()) %>%
+	ungroup()
+```
+
+
+Now let's use `filter` to get the information for my birthday and remind ourselves of what it was in 1976
+
+```{r}
+daily_temps %>%
+	filter(month == 6 & day == 20)
+
+aa_weather %>%
+	filter(date == "1976-06-20")
+```
+
+We see that the temperature on the day I was born was a few degrees cooler than the median temperature over the past 128 years. To plot these data to visually find the temperature for any day of the year we need to think about our x-axis value. We have lost the date because we summarized on `month` and `day`. We can create a new date column by making R think that it is always 2020 - this is a good choice because 2020 is a leap year. We'll make a new column called `date` that is the year, month, and day pasted with hyphens. We can do this pasting with the `paste` function.
+
+```{r}
+daily_temps %>%
+	mutate(date = paste(2020, month, day, sep='-'))
+```
+
+We see that the `date` column is a character format, but we'd like it to be a date format. We can convert this ISO-ish format to true ISO date format by wrapping the `ymd` function around our `paste` function.
+
+```{r}
+daily_temps %>%
+	mutate(date = ymd(paste(2020, month, day, sep='-')))
+```
+
+Now we can feed this into ggplot to plot our data
+
+```{r}
+daily_temps %>%
+	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
+	ggplot(aes(x=date, y=t_med_c)) +
+	geom_line()
+```
+
+We can also add the confidence intervals using `geom_errorbar`
+
+```{r}
+daily_temps %>%
+	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
+	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
+	geom_line(color="black") +
+	geom_errorbar(color="gray")
+```
+
+```{r}
+daily_temps %>%
+	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
+	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
+	geom_errorbar(color="gray") +
+	geom_line(color="black")
+```
+
+What is the temperature generally like on June 20th?
+
+```{r}
+daily_temps %>%
+	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
+	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
+	geom_linerange(color="gray") +
+	geom_line(color="black") +
+	geom_vline(xintercept=ymd("2020-06-20"))
+```
+
+
+
+
+Questions
+* Make a histogram of high temperatures recoded on your birthday and add a vertical line to indicate the temperature of the day you were born.
+
+```{r}
+aa_weather %>%
+	mutate(month = month(date),
+		day = day(date)) %>%
+	filter(month == 6, day == 20) %>%
+	ggplot(aes(x=t_max_c)) +
+		geom_histogram(binwidth=3) +
+		geom_vline(xintercept=24.4)
+```
+
+* Make a line plot of the average daily high temperature
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date), month = month(date)) %>%
+	group_by(year) %>%
+	summarize(t_mean_c = mean(t_max_c, na.rm=T)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	ggplot(aes(x=year, y=t_mean_c)) +
+		geom_line()
+```
+
+* Make a scatter plot of the total yearly precipitation on the y-axis and the average annual high temperature on the x-axis. Plot the year using the color aesthetic.
+
+```{r}
+aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE),
+		t_mean_c = mean(t_max_c, na.rm=T)) %>%
+	filter(year != 1891 & year != 2020) %>%
+	ggplot(aes(x=t_mean_c, y=annual_precip_mm, color=year)) +
+		geom_point()
+```

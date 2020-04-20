@@ -1,0 +1,27 @@
+---
+layout: lesson
+title: "Session 15"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
+
+Pick an analysis and follow it over time to show how to concatenate data frames

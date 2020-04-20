@@ -1,5 +1,28 @@
+---
+layout: lesson
+title: "Session 8"
+output: markdown_document
+---
 
-## Chapter 8
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 By the end of the last lesson, if you did all of the exercises, you should have come up with something like the code chunk below. Go ahead and copy this into a file called `weather.R` and save the file.
 

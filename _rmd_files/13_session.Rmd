@@ -1,5 +1,28 @@
+---
+layout: lesson
+title: "Session 13"
+output: markdown_document
+---
 
-## Chapter 13
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 In the last lesson we looked at the representation of women among people graduating with a Bachelor's degree at different types of institutions and at the difference in representation of women who graduated from large research extensive universities with a bachelor's degree and a doctorate degree. To achieve this, we used a number of functions we had seen in previous lessons but in a new context: `read_csv`, `read_excel`, `filter`, `group_by`, `summarize`, `select`, `inner_join`, and `arrange`. We also met some new functions including those to plot continuous data against categorical data like `geom_jitter`, `geom_boxplot`, and `geom_violin`. We also learned how to move rows to columns using `pivot_wider`. We put this all to good effect to see some interesting relationships in the data, namely, there's evidence for a "leaky pipeline" as women move from a bachelor's to doctoral degree program.
 

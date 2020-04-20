@@ -1,10 +1,34 @@
-## Chapter 11
+---
+layout: lesson
+title: "Session 11"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 In the previous lessons I've given you data without much explanation for how I found the data. Of course, for many, you will be generating data through a survey you deploy or with an experiment you are conducting. Reading a paper, news story, or listening to a podcast never satisfies my curiosity. I want to play with the data to answer my own variation on a question. My general strategy of finding data, frankly, is to use google with words like "download" or "raw data". For example, "temperature raw data" will get you pretty close to the site that I got our Ann Arbor data from.
 
 I have been working on a project that is asking how well women are represented in scientific publishing and as gate keepers throughout peer review. This analysis got me to thinking about how well women and other groups are represented at various levels of training. I also wondered how that representation varies by discipline. Thinking about these types of questions, my ears perked up when I heard of a service on my campus that quantifies what the demographic pool of applicants for faculty positions should look like based on the representation of various groups amongst its trainees.
 
-To answer these types of questions, for the next few chapters we are going to look at data collected by the National Center for Education Statistics at the US Department of Education. They maintain the [Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/), which houses a number of surveys on higher education. This is an amazingly rich dataset that we'll use to explore some questions. According to their website, "Institutions submit data through 12 interrelated survey components about general higher education topics for 3 reporting periods." I have provided you a subset of the data as "csv" files in the `ipdeds` directory along with the data dictionaries. These dictionaries explain the column names and codes used in the two csv files. If you go to their ["Use the Data"](https://nces.ed.gov/ipeds/use-the-data) page, on the right side of the page there is a heading "Survey Data" with a drop down menu. In the drop down menu select, "Complete Data Files". In the next page you can leave the default choices of "All years" and "All surveys" and then press "Continue". On this page you'll see the 12 surveys for each year going back to 1980. As I've found, the surveys change over time as do how the data are reported and recorded. To avoid wrangling data across years, we'll work with data that was reported for 2018.
+To answer these types of questions, for the next few sessions we are going to look at data collected by the National Center for Education Statistics at the US Department of Education. They maintain the [Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/), which houses a number of surveys on higher education. This is an amazingly rich dataset that we'll use to explore some questions. According to their website, "Institutions submit data through 12 interrelated survey components about general higher education topics for 3 reporting periods." I have provided you a subset of the data as "csv" files in the `ipdeds` directory along with the data dictionaries. These dictionaries explain the column names and codes used in the two csv files. If you go to their ["Use the Data"](https://nces.ed.gov/ipeds/use-the-data) page, on the right side of the page there is a heading "Survey Data" with a drop down menu. In the drop down menu select, "Complete Data Files". In the next page you can leave the default choices of "All years" and "All surveys" and then press "Continue". On this page you'll see the 12 surveys for each year going back to 1980. As I've found, the surveys change over time as do how the data are reported and recorded. To avoid wrangling data across years, we'll work with data that was reported for 2018.
 
 Again, there are *many* questions we could try to answer with these data. I'm going to focus on degrees granted in 2018 by field across institutions. By looking through the files, I decided that I was most interested in "Institutional Characteristics	Directory information" and "Completions	Awards/degrees conferred by program (6-digit CIP code), award level, race/ethnicity, and gender: July 1, 2017 to June 30, 2018". These files are in the `ipdeds` directory as `c2018.csv`/`c2018.xlsx` and `hd2018.csv`/`hd2018.xlsx`, respectively. The csv files contain the data and the xlsx files contain the data dictionary for each csv file. We'll start by loading the `tidyverse` package and reading in the `c2018_a` csv file as the `degrees` data frame.
 

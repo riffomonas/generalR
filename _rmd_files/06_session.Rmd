@@ -1,7 +1,30 @@
+---
+layout: lesson
+title: "Session 6"
+output: markdown_document
+---
 
-## Chapter 6
+## Topics
+*
 
-For the next few chapters we're going to switch to a different dataset that includes weather observations from Ann Arbor, MI from October 1891 through the beginning of April 2020. I've frequently heard farmers in Southeastern Michigan tell me that we used to get a lot more snow, ponds used to stay frozen longer, and it's never been as warm as it has been in the last few summers. There's a lot of anecdotal evidence from these farmers that the climate is changing. I've been curious if we can see that in the data. Let's take a look!
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
+
+For the next few sessions we're going to switch to a different dataset that includes weather observations from Ann Arbor, MI from October 1891 through the beginning of April 2020. I've frequently heard farmers in Southeastern Michigan tell me that we used to get a lot more snow, ponds used to stay frozen longer, and it's never been as warm as it has been in the last few summers. There's a lot of anecdotal evidence from these farmers that the climate is changing. I've been curious if we can see that in the data. Let's take a look!
 
 If you know the identifier for your local weather recording station, you can obtain data near where you live from NOAA who maintains the Daily Global Historical Climatology Network and makes the data available through https://www.ncdc.noaa.gov/cdo-web/search. My local weather station with the most data is located on the north side of the University of Michigan campus and has the code "USC00200230". The data we'll use is from that weather station and includes temperature and precipitation data going back to 1891. You can get an overview of the data available at https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00200230/detail. I've put a `comma-separated values` (CSV) version of the file in your `noaa` directory. We'll load the `tidyverse` package and read in the data as `aa_weather`
 

@@ -1,0 +1,483 @@
+---
+layout: lesson
+title: "Session 11"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+
+
+In the previous lessons I've given you data without much explanation for how I found the data. Of course, for many, you will be generating data through a survey you deploy or with an experiment you are conducting. Reading a paper, news story, or listening to a podcast never satisfies my curiosity. I want to play with the data to answer my own variation on a question. My general strategy of finding data, frankly, is to use google with words like "download" or "raw data". For example, "temperature raw data" will get you pretty close to the site that I got our Ann Arbor data from.
+
+I have been working on a project that is asking how well women are represented in scientific publishing and as gate keepers throughout peer review. This analysis got me to thinking about how well women and other groups are represented at various levels of training. I also wondered how that representation varies by discipline. Thinking about these types of questions, my ears perked up when I heard of a service on my campus that quantifies what the demographic pool of applicants for faculty positions should look like based on the representation of various groups amongst its trainees.
+
+To answer these types of questions, for the next few sessions we are going to look at data collected by the National Center for Education Statistics at the US Department of Education. They maintain the [Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/), which houses a number of surveys on higher education. This is an amazingly rich dataset that we'll use to explore some questions. According to their website, "Institutions submit data through 12 interrelated survey components about general higher education topics for 3 reporting periods." I have provided you a subset of the data as "csv" files in the `ipdeds` directory along with the data dictionaries. These dictionaries explain the column names and codes used in the two csv files. If you go to their ["Use the Data"](https://nces.ed.gov/ipeds/use-the-data) page, on the right side of the page there is a heading "Survey Data" with a drop down menu. In the drop down menu select, "Complete Data Files". In the next page you can leave the default choices of "All years" and "All surveys" and then press "Continue". On this page you'll see the 12 surveys for each year going back to 1980. As I've found, the surveys change over time as do how the data are reported and recorded. To avoid wrangling data across years, we'll work with data that was reported for 2018.
+
+Again, there are *many* questions we could try to answer with these data. I'm going to focus on degrees granted in 2018 by field across institutions. By looking through the files, I decided that I was most interested in "Institutional Characteristics	Directory information" and "Completions	Awards/degrees conferred by program (6-digit CIP code), award level, race/ethnicity, and gender: July 1, 2017 to June 30, 2018". These files are in the `ipdeds` directory as `c2018.csv`/`c2018.xlsx` and `hd2018.csv`/`hd2018.xlsx`, respectively. The csv files contain the data and the xlsx files contain the data dictionary for each csv file. We'll start by loading the `tidyverse` package and reading in the `c2018_a` csv file as the `degrees` data frame.
+
+
+```r
+library(tidyverse)
+degrees <- read_csv("ipdeds/c2018_a.csv")
+```
+
+```
+## Error: 'ipdeds/c2018_a.csv' does not exist in current working directory ('/Users/pschloss/Documents/websites/riffomonas/generalR').
+```
+
+```r
+degrees
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'degrees' not found
+```
+
+Ugh, those column names!
+
+`ipdeds/c2018_a.xlsx` contains the data dictionary. Open it up in Excel, it has different pages that tell you what the column names mean and what the various values are. For example, the "varlist" and "Description" tabs tell us that "UNITID" tells us the "Unique identification number of the institution". It also tells us that "CIPCODE" is the "CIP Code -  2010 Classification" and that "AWLEVEL" is the "Award Level code". If we want to know the values that correspond to each CIP or Award Level codes, we need to look at the "Frequencies" tab. We see that the first 1426 rows of the "Frequencies" tab are different CIP codes. These correspond to different "majors". Below the CIP codes, we see entries for "MAJORNUM" and "AWLEVEL". Cool - I'd like to look at the 2018 awards data for the University of Michigan. Which "UNITID" corresponds to the University of Michigan or any other university? That "decoder" isn't in this workbook.
+
+If you do some digging on the page where we saw the "C2018_A" data, at the top of the page you'll find "HD2018". The description for this survey is "Institutional Characteristics,	Directory information". Those data and the data dictionary are provided for you in `ipdeds/`. Opening `ipdeds/hd2018.xlsx` in Microsoft Excel and clicking on the "varlist" or "Description" tab show us that this survey will give us the mapping between "UNITID" and the institution name or "INSTNM". Now, let's open `ipdeds/hd2018.csv` in Excel. You can do this by doing "File -> Open..." and browsing to `ipdeds/hd2018.csv`. We can then click on the "Edit" menu and click on "Find". In the dialog window that opens, enter "University of Michigan" and press the return key. You'll see that the "University of Michigan-Ann Arbor"'s "UNITID" is "170976".
+
+Now we want to pull all of the rows from the `degrees` data frame that correspond to that UNITID. Remember how to do that?
+
+
+```r
+degrees %>%
+	filter(UNITID == 170976)
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+From that filter, we have winnowed our data frame down to the 570 rows that correspond to the University of Michigan. Each row of this data frame corresponds to a different `CIPCODE`/`MAJORNUM`/`AWLEVEL` combination. To simplify things, let's only look at people's first major. Also, the first CIPCODE - "99" - is a grand total so we don't want to include those data.
+
+
+```r
+degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & CIPCODE != 99)
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+I'd like to know how many award levels are represented at the University of Michigan and how many majors correspond to each award level. Do you recall how to count the number of times a value appears in a column? We can use the `count` function.
+
+
+```r
+degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & CIPCODE != 99) %>%
+	count(AWLEVEL)
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+We see that the most common award levels are codes "05", "07", and "17". Reopening `ipdeds/c2018_a.xlsx` in Excel, we can turn to the "Frequencies" tab and scroll to the bottom where we see the translation of the "AWLEVEL" codes. These three codes correspond to "Bachelor's degree",
+"Master's degree", and "Doctor's degree - research/scholarship", respectively. The university also awards "Postbaccalaureate certificate" (`06`), "Post-master's certificate" (`08`), and "Doctor's degree - professional practice" (`18`). Note that the values in the `n` column of this new data frame are the number of majors that awarded one of these "degree" types in 2018. I'd like to know how many people graduated with these degrees, across all marjors. Hopefully, this is ringing bells in your head and you're thinking about how you can use `group_by` and `summarize`. Before we can use those functions, we need to figure out which column in `degrees` contains the number of students to receive an award. From the data dictionary, we see that "CTOTALT" contains the "Grand total". Let's try that and save it as a variable.
+
+
+```r
+um_degrees <- degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & CIPCODE != 99) %>%
+	group_by(AWLEVEL) %>%
+	summarize(n_graduates = sum(CTOTALT))
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+The University of Michigan awarded 7,450 Bachelor's degrees, 4,677 Master's degrees, 874 research-based doctorates, and 682 professional doctorates. What we've seen so far in this lesson is a bit of review from what we have done in previous lessons. I don't expect that you could have done these steps on your own, but I hope these steps jogged some memories. Even if the syntax is still hard to master, I hope your mind is swimming with questions to ask with these datasets! How do these numbers break down by gender? Race or ethnicity? Do they vary over year? Which program has the most students? Whoa! We'll get to these but let's see if we can improve upon what we've already done.
+
+The first thing I would like to do is automate a few steps. To figure out things like "UNITID" and "AWLEVEL" we have had to flip back and forth to Excel. That's a little cumbersome for a single institution, but if we wanted to compare multiple schools. I'm also struggling to remember the codes for the different awards. I'd like the last data frame we generated showing the number of awards given in 2018 by award type to list the actual award rather than the code. To do this we need to learn two new things: how to read Excel files (those that end in `xlsx`) and how to join two data frames together.
+
+We've seen that the "AWLEVEL" codes are provided in the "Frequencies" tab of `ipdeds/c2018_a.xlsx`. We can read in an Excel file using the `read_excel` function from the `readxl` package, which is part of `tidyverse`.
+
+
+```r
+library(readxl)
+
+read_excel("ipdeds/c2018_a.xlsx")
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+From the output, you should notice that it read in the first page of the workbook - "Introduction". We'd like the "Frequencies" tab. Can you use `?read_excel` to figure out how to get the "Frequencies" tab?
+
+
+```r
+read_excel("ipdeds/c2018_a.xlsx", sheet="Frequencies")
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+Cool, eh? There is nothing inherently wrong with using Excel! Many of us find it very useful for recording data and sharing it with others. As you grow in your comfort with R, you may find it is easier to work with the data in R rather than Excel. I'm not really sure how I would do the commands in this lesson in Excel, but they will grow to become straightforward for you in R. An added motivation, is that instead of having to remember your mouse clicks and communicating those to someone else, you can record your R commands in a script to share with a friend or to apply on the 2019 data when they are released.
+
+Let's focus on the rows for the "AWLEVEL", get rid of the extraneous columns, and save it as a new data frame
+
+
+```r
+award_code <- read_excel("ipdeds/c2018_a.xlsx", sheet="Frequencies") %>%
+	filter(varname == "AWLEVEL") %>%
+	select(codevalue, valuelabel)
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+Great! Now we want to join our two data frames. We can do this using a `dplyr` function called `inner_join`. This function expects two data frames that will be merged using either a column name that is in both data frames or that is specified by us. If a value is missing from either data frame is is not retained in the resulting data frame (see `?left_join`, `?right_join`, `?full_join` for how to get other behaviors). For example, assume we have two data frames:
+
+
+```r
+animal_sounds <- tibble(animal = c("cat", "dog", "fish", "pig"),
+		sound = c("meow", "bark", "blub", "oink"))
+animal_legs <- tibble(animal = c("cat", "chicken", "pig", "fish"),
+		n_legs = c(4, 2, 0, 4))
+
+inner_join(animal_sounds, animal_legs)
+```
+
+```
+## # A tibble: 3 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 fish   blub       4
+## 3 pig    oink       0
+```
+
+In this example, because there is an `animal` column in both data frames, it is used to join the data frames. Here, `inner_join` returns a new data frame with three rows and three columns. You'll see that there's no row for "dog" or "chicken" because those animals were not found in both data frames. You'll also see that we have all three columns represented by the two data frames - `animal`, `sound`, `n_legs`. To see how we join data frames, like ours, where the two data frames don't have a common column between them let's add a third data frame
+
+
+```r
+pats_farm <- tibble(type=c("cat", "dog", "chicken", "pig", "fish"),
+		he_has=c(TRUE, TRUE, TRUE, TRUE, FALSE))
+```
+
+The `pats_farm` doesn't have an `animal` column, it has a `type` column. We could use `rename` to "fix" `pats_farm`. But we can also leave it is by providing an extra argument to `inner_join`
+
+
+```r
+inner_join(animal_sounds, pats_farm, by=c("animal"="type"))
+```
+
+```
+## # A tibble: 4 x 3
+##   animal sound he_has
+##   <chr>  <chr> <lgl> 
+## 1 cat    meow  TRUE  
+## 2 dog    bark  TRUE  
+## 3 fish   blub  FALSE 
+## 4 pig    oink  TRUE
+```
+
+Note that even in the case where we have a column in common between the data frames, we can tell `inner_join` which we want to join on. This can be helpful if there are multiple columns in common between the data frames and we want to exclude one of them. See if you can see the subtle difference between setting the `by` argument and not in this case
+
+
+```r
+inner_join(animal_sounds, animal_legs, by="animal")
+```
+
+```
+## # A tibble: 3 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 fish   blub       4
+## 3 pig    oink       0
+```
+
+Finally, we can chain together our joins if we have multiple data frames to join
+
+
+```r
+inner_join(animal_sounds, animal_legs, by="animal") %>%
+	inner_join(., pats_farm, by=c("animal" = "type"))
+```
+
+```
+## # A tibble: 3 x 4
+##   animal sound n_legs he_has
+##   <chr>  <chr>  <dbl> <lgl> 
+## 1 cat    meow       4 TRUE  
+## 2 fish   blub       4 FALSE 
+## 3 pig    oink       0 TRUE
+```
+
+To put `inner_join` into a pipeline like we did here, you need to put a `.` where data from the pipeline goes. Also, notice that for our `by` argument, the order of the columns needs to match their representation in the `inner_join`. For example, if we did `inner_join(pats_farm, ., by=c("animal" = "type"))` we will get an error, but if we do `inner_join(pats_farm, ., by=c("type" = "animal"))`, we won't.
+
+Let's try this with our `um_degrees` and `award_code` data frames!
+
+
+```r
+inner_join(um_degrees, award_code, by=c("AWLEVEL"="codevalue"))
+```
+
+```
+## Error in inner_join(um_degrees, award_code, by = c(AWLEVEL = "codevalue")): object 'um_degrees' not found
+```
+
+Fantastic! Oops, maybe not. We only have our rows corresponding to the doctorate degrees. You might notice a subtle difference between the values in `codevalue` from `award_code` and `AWLEVEL` in `um_degrees`. The single digit values in `AWLEVEL` have a "0" on the left side to make the code a two digit string; the values in `codevalue` don't have the padding. We can add pad the numbers using the `str_pad` function, which is part of the `strignr` package that was loaded when we did `library(tidyverse)`. We'll see more of functions from `stringr` in the next few lessons. It's a powerful package for working with string data. Look at `?str_pad` to see if you can figure out how we might apply it for our case.
+
+`str_pad` takes a string to be padded, the width to pad to, the side to pad (left is the default), and what to use as the pad (a space is the default). Say we have a set of numbers (i.e. a vector) from 1 to 20, we can define that as `1:20`
+
+
+```r
+x <- 1:20
+
+# can you figure out why these two versions of `str_pad` do the same thing?
+str_pad(string=x, width=2, side="left", pad="0")
+
+# or
+
+str_pad(x, 2, pad="0")
+```
+
+```
+##  [1] "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "20"
+##  [1] "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "20"
+```
+
+Do you remember how we can modify an existing column? `mutate`! Let's modify the `codevalue` column
+
+
+```r
+award_code <- read_excel("ipdeds/c2018_a.xlsx", sheet="Frequencies") %>%
+	filter(varname == "AWLEVEL") %>%
+	select(codevalue, valuelabel) %>%
+	mutate(codevalue = str_pad(codevalue, 2, pad="0"))
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+Now that the formatting of `codevalue` is fixed, let's try that join again
+
+
+```r
+inner_join(um_degrees, award_code, by=c("AWLEVEL"="codevalue"))
+```
+
+```
+## Error in inner_join(um_degrees, award_code, by = c(AWLEVEL = "codevalue")): object 'um_degrees' not found
+```
+
+We can clean up the output a little using `select` and `rename`
+
+
+```r
+inner_join(um_degrees, award_code, by=c("AWLEVEL"="codevalue")) %>%
+	select(valuelabel, n_graduates) %>%
+	rename("degree" = "valuelabel")
+```
+
+```
+## Error in inner_join(um_degrees, award_code, by = c(AWLEVEL = "codevalue")): object 'um_degrees' not found
+```
+
+
+Questions
+
+* Use the `left_join`, `right_join`, and `full_join` functions to merge `animal_sounds` and `animal_legs`. What happens with these functions (and `inner_join`) if you switch the order of `animal_sounds` and `animal_legs` in the arguments to these functions?
+
+
+```r
+# only information for shared animals is outputted
+inner_join(animal_sounds, animal_legs, by="animal")
+
+# only information for animals in animal_sounds is outputted; missing get NA
+left_join(animal_sounds, animal_legs, by="animal")
+
+# only information for animals in animal_legs is outputted; missing get NA
+right_join(animal_sounds, animal_legs, by="animal")
+
+# information from both data frames is outputted; missing get NA
+full_join(animal_sounds, animal_legs, by="animal")
+
+# the order of the columns is determined by the order of the data frames
+inner_join(animal_legs, animal_sounds, by="animal")
+```
+
+```
+## # A tibble: 3 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 fish   blub       4
+## 3 pig    oink       0
+## # A tibble: 4 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 dog    bark      NA
+## 3 fish   blub       4
+## 4 pig    oink       0
+## # A tibble: 4 x 3
+##   animal  sound n_legs
+##   <chr>   <chr>  <dbl>
+## 1 cat     meow       4
+## 2 chicken <NA>       2
+## 3 pig     oink       0
+## 4 fish    blub       4
+## # A tibble: 5 x 3
+##   animal  sound n_legs
+##   <chr>   <chr>  <dbl>
+## 1 cat     meow       4
+## 2 dog     bark      NA
+## 3 fish    blub       4
+## 4 pig     oink       0
+## 5 chicken <NA>       2
+## # A tibble: 3 x 3
+##   animal n_legs sound
+##   <chr>   <dbl> <chr>
+## 1 cat         4 meow 
+## 2 pig         0 oink 
+## 3 fish        4 blub
+```
+
+* Which programs at the University of Michigan awarded a Postbaccalaureate certificate (AWLEVEL: 06) in 2018? What about a Post-master's certificate (AWLEVEL: 08)?
+
+
+```r
+cip_codes <- read_excel("ipdeds/c2018_a.xlsx", sheet="Frequencies") %>%
+	filter(varname == "CIPCODE" & codevalue != 99) %>%
+	rename("major" = "valuelabel" ) %>%
+	select(codevalue, major)
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+```r
+degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & AWLEVEL == "06" & CIPCODE != 99 & CTOTALT != 0) %>%
+	select(CIPCODE, CTOTALT) %>%
+	inner_join(., cip_codes, by=c("CIPCODE"="codevalue"))
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+```r
+degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & AWLEVEL == "08" & CIPCODE != 99 & CTOTALT != 0) %>%
+	select(CIPCODE, CTOTALT) %>%
+	inner_join(., cip_codes, by=c("CIPCODE"="codevalue")) %>%
+	arrange(desc(CTOTALT)) %>%
+	print(n=Inf)
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+* Which major at the University of Michigan awarded the most Bachelor's degrees? Master's? Doctorates (Research)? Doctorates (Professional)? Can you join a data frame with the CIPCODES data?
+
+
+```r
+cip_codes <- read_excel("ipdeds/c2018_a.xlsx", sheet="Frequencies") %>%
+	filter(varname == "CIPCODE" & codevalue != 99) %>%
+	rename("major" = "valuelabel" ) %>%
+	select(codevalue, major)
+```
+
+```
+## Error: `path` does not exist: 'ipdeds/c2018_a.xlsx'
+```
+
+```r
+um_degrees_majors <- degrees %>%
+	filter(UNITID == 170976 & MAJORNUM == 1 & CIPCODE != 99) %>%
+	group_by(AWLEVEL, CIPCODE) %>%
+	summarize(n_graduates = sum(CTOTALT)) %>%
+	ungroup() %>%
+	inner_join(., cip_codes, by=c("CIPCODE" = "codevalue")) %>%
+	inner_join(., award_code, by=c("AWLEVEL" = "codevalue")) %>%
+	arrange(desc(n_graduates)) %>%
+	rename("degree" = "valuelabel") %>%
+	select(degree, AWLEVEL, major, n_graduates) %>%
+	arrange(desc(n_graduates))
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'degrees' not found
+```
+
+```r
+um_degrees_majors %>% filter(AWLEVEL == "05")
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'um_degrees_majors' not found
+```
+
+```r
+um_degrees_majors %>% filter(AWLEVEL == "07")
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'um_degrees_majors' not found
+```
+
+```r
+um_degrees_majors %>% filter(AWLEVEL == "17")
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'um_degrees_majors' not found
+```
+
+```r
+um_degrees_majors %>% filter(AWLEVEL == "18")
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'um_degrees_majors' not found
+```
+
+
+
+* Without looking up numbers in Excel, can you compare the total number of different degrees granted in 2018 at the "University of Michigan-Ann Arbor" and "Michigan State University"?
+
+
+```r
+institution_code <- read_csv("ipdeds/hd2018.csv") %>%
+	filter(INSTNM == "University of Michigan-Ann Arbor" | INSTNM == "Michigan State University") %>%
+	select(UNITID, INSTNM)
+```
+
+```
+## Error: 'ipdeds/hd2018.csv' does not exist in current working directory ('/Users/pschloss/Documents/websites/riffomonas/generalR').
+```
+
+```r
+inner_join(degrees, institution_code, by="UNITID") %>%
+	filter(MAJORNUM == 1) %>%
+	group_by(AWLEVEL, INSTNM) %>%
+	summarize(n_graduates = sum(CTOTALT)) %>%
+	ungroup() %>%
+	inner_join(., award_code, by=c("AWLEVEL"="codevalue")) %>%
+	select(INSTNM, valuelabel, n_graduates) %>%
+	rename("institution"="INSTNM", "degree_type"="valuelabel")
+```
+
+```
+## Error in inner_join(degrees, institution_code, by = "UNITID"): object 'degrees' not found
+```

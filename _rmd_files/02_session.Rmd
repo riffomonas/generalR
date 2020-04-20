@@ -1,8 +1,43 @@
-## Chapter 2
+---
+layout: lesson
+title: "Session 2"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 Now let's see how we can manipulate various aesthetics about the line we are plotting with the `geom_line` and see if we can make a different type of plot. There are many geom's available to us for making different types of plots. We've seen `geom_line`. Let's try two others to make a scatter plot and a barchart
 
 ```{r}
+library(tidyverse)
+library(lubridate)
+
+annual_counts <- read_csv("project_tycho/US.23502006.csv",
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	filter(PartOfCumulativeCountSeries) %>%
+	mutate(year = year(PeriodStartDate+7)) %>%
+	group_by(year) %>%
+	summarize(count = max(CountValue))
+
+
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_point() +
 	scale_y_continuous(limits=c(0,NA)) +
@@ -32,19 +67,12 @@ Aesthetics:
 
      ‘geom_path()’ understands the following aesthetics (required
      aesthetics are in bold):
-
         • *‘x’*
-
         • *‘y’*
-
         • ‘alpha’
-
         • ‘colour’
-
         • ‘group’
-
         • ‘linetype’
-
         • ‘size’
 
      Learn more about setting these aesthetics in
@@ -53,7 +81,7 @@ Aesthetics:
 
 Clearly `x` and `y` are going to be required. We'll talk about it in a bit, but we set those in the line `ggplot(annual_counts, aes(x=year, y=count))`.
 
-### questions
+### Questions
 * What aesthetic values are available for use with `geom_point` and `geom_col`?
 * Can you see a difference between `geom_line`, `geom_path`, and `geom_step`? Why might you not see a difference between the output for `geom_line` and `geom_path`?
 
@@ -161,7 +189,7 @@ ggplot(annual_counts, aes(x=year, y=count, fill=year)) +
 You'll note that we removed `fill="blue"` from `geom_col()` and put `fill=year` into the `aes` function within the `ggplot` function call. In this example, year is a *continuous* variable so we get a gradient of blues. Later we'll see how this changes when the variable is a *categorical* variable.
 
 
-### questions
+### Questions
 * what does alpha do?
 * what happens if we use `color="blue"` rather than `fill="blue"` as a `geom_col` argument? Try using both arguments, but so that `color` and `fill` have different values
 * what happens when you try to map the year to the `shape` aesthetic when using `geom_point`? Can you find another aesthetic to map to the year or color variables that will work?

@@ -1,21 +1,44 @@
+---
+layout: lesson
+title: "Session 1"
+output: markdown_document
+---
 
-## Chapter 1
+## Topics
+*
 
-### Motivation...
-* Jaw dropping heatmaps based on Project Tycho data
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
+
+If you're like me, your jaw dropped the first time you saw the [stunning heat maps](http://web.archive.org/web/20181106110235/http://graphics.wsj.com/infectious-diseases-and-vaccines/) published by the Wall Street Journal showing the incidence of various diseases, including Measles and Polio, over the past 100 years. 
+
+
+
+  * Jaw dropping heatmaps based on Project Tycho data
 * Debate over whether the heatmaps were an effective means of displaying the data
 * Wanted to check out the data and found the Project Tycho dataset
 * Surprised by the variety of diseases that the researchers have aggregated over a long period of time
 * My questions - is Lyme disease spreading west? As a Michigander should I be worried? Should my in laws in Missouri be worried?
 
 
-### Show answer
-
 ```{R}
 library(tidyverse)
 library(lubridate)
 
-#build plot of cases across the country - lead with this plot
 annual_counts <- read_csv("project_tycho/US.23502006.csv",
 					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%

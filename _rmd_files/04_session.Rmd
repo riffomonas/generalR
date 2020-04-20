@@ -1,8 +1,30 @@
+---
+layout: lesson
+title: "Session 4"
+output: markdown_document
+---
+
+## Topics
+*
 
 
-## Chapter 4
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
 
-The line plot that we made in Chapter 1 was pretty compelling, right? The United States is a big place geographically and in its population. What does it look like in the states we are most concerned about? We've been playing with visualizing data without actually understanding much about the data we are working with. To answer the state-level question, we need to better understand our data frame.
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
+
+The line plot that we made in Session 1 was pretty compelling, right? The United States is a big place geographically and in its population. What does it look like in the states we are most concerned about? We've been playing with visualizing data without actually understanding much about the data we are working with. To answer the state-level question, we need to better understand our data frame.
 
 Previously we saw this chunk of code
 
@@ -24,7 +46,7 @@ read_csv("project_tycho/US.23502006.csv",
 		col_type=cols(PartOfCumulativeCountSeries = col_logical()))
 ```
 
-You'll get the first 10 rows of the data frame and depending on the size of your screen, you'll get different numbers of columns. You'll also get a listing of the various column names, but without their data. You'll also see an abbreviation between `< >` characters that tells you the type of data you have. For example, `ConditionName` has `<chr>` under it telling you that it's a column that contains "character" or text data. The neighboring column `ConditionSNOMED` has `<dbl>`, which is shorthand for "double", a type of numerical data. We'll discuss this later, but for now, you can see that we are telling `read_csv` that `PartOfCumulativeCountSeries` should be a logical variable. 
+You'll get the first 10 rows of the data frame and depending on the size of your screen, you'll get different numbers of columns. You'll also get a listing of the various column names, but without their data. You'll also see an abbreviation between `< >` characters that tells you the type of data you have. For example, `ConditionName` has `<chr>` under it telling you that it's a column that contains "character" or text data. The neighboring column `ConditionSNOMED` has `<dbl>`, which is shorthand for "double", a type of numerical data. We'll discuss this later, but for now, you can see that we are telling `read_csv` that `PartOfCumulativeCountSeries` should be a logical variable.
 
 Another approach is to use `colnames` on the data frame to get a simple listing of the column names
 

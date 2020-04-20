@@ -15,3 +15,11 @@ ordination.png
 _book/
 _bookdown_files/
 
+.Rproj.user
+
+ipeds
+noaa
+project_tycho
+*.Rproj
+
+*.pdf

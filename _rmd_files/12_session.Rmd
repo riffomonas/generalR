@@ -1,5 +1,28 @@
+---
+layout: lesson
+title: "Session 12"
+output: markdown_document
+---
 
-## Chapter 12
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 Before tacking representation within a specific (or broad) discipline, I'd like to understand representation of students graduating with a Bachelor's degree in 2018 at different types of institutions. Within the US there are different categories of schools based on their mission. One way of doing this is by using a [framework](http://carnegieclassifications.iu.edu/definitions.php) developed by the Carnegie Commission on Higher Education in 1970 and modified since. The data for the 2000 definition are provided in the `CARNEGIE` column of `ipdeds/hd2018.csv` (there are newer definitions that break down institutions into finer categories). Let's ease into our analysis by reading in the awards data again finding the total number of Bachelor's degrees conferred at each institution. We'll take advantage of the observation that CIP code 99 indicates the total number of degrees awarded at the institution and that AWLEVEL "05" is for the Bachelor's degree. Then we'll bring in the institution name and its Carnegie information.
 

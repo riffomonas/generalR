@@ -1,12 +1,26 @@
+---
+layout: lesson
+title: "Session 9"
+output: markdown_document
+---
 
-## Chapter 9
+## Topics
+*
+
+
+
 
 We have more than 46,000 rows of data in `aa_weather`. Even in graphical form, that's a lot to digest.
 
-```{r}
+
+```r
 aa_weather %>%
 	ggplot(aes(x=date, y=t_max_c)) +
 		geom_line()
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
 ```
 
 There's way too much day-to-day variation to get a sense of the year-to-year variation. We need to do something to intelligently group the data. A lot of questions we might want to answer with these data involve grouping data that is similar and the summarizing the grouped data. For example,
@@ -21,7 +35,8 @@ To answer each of these questions, we will need to group the data and then do so
 
 As an aside, the date is one of those things that can be written [many different ways](https://xkcd.com/1179/). How do you write it? I was born on June 20, 1976. How do you most naturally write that date? 20 June 1976? 6/20/1976? 20/6/1976? 6/20/1976? There is a standard format that virtually no one outside of data science uses - ISO 8601. It is expressed as "YYYY-MM-DD". You'll notice that the date column follows this standard and so we need to convert our dates to the standard as well - "1976-06-20". If our data are nicely formatted, there's a lot of useful information that we can extract from that date. A handy [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf) is available to help you with formatting dates, extracting information, and other dates related goodies
 
-```{r}
+
+```r
 library(lubridate)
 
 birth_date <- "1976-06-20"
@@ -33,48 +48,78 @@ yday(birth_date) # Julian date
 week(birth_date) # week of the year
 ```
 
+```
+## [1] 1976
+## [1] 6
+## [1] 20
+## [1] 1
+## [1] 172
+## [1] 25
+```
+
 Let's find the year with the most precipitation. Take a moment and think to yourself what you would need to do to figure this out. Don't worry about the R syntax. Write it out in your own words, use pictures, whatever helps you think. Here's my thinking: I need to get the year for each observation in the data frame. Then I need to group the data by the year. Finally, I need to sum the `total_precip_mm` column within each year. You've seen all of these steps before with another application in the Project Tycho data, but we didn't discuss it in depth.
 
 The first step should sound most familiar. We need to generate a `year` column using the `mutate` and `year` functions
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	select(year, everything()) # this puts the year column first and then everything else
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Now we need to group the data by the year. To do this we'll use the `group_by` function
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
 	select(year, everything()) # this puts the year column first and then everything else
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
 ```
 
 This output doesn't look that different than when we ran it without the `group_by` function. If you look closely at the second line of output, you'll see that it indicates, "# Groups:   year [130]". It has grouped our data in to 130 groups - one for each year in the dataset.
 
 Finally, we need to sum the `total_precip_mm` column for each group (i.e. year). We will do this with the `summarize` and `sum` functions
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
 	summarize(annual_precip_mm = sum(total_precip_mm))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Nice, eh?! We have a new data frame with the year and the total precipitation for the year as measured in millimeters. There are two things to mention here. First, for 1891 to 1896 we have `NA` values for `annual_precip_mm`. It's not clear to me whether an `NA` means missing data or no precipitation. We know that there were some records of precipitation in 1891 from the output of running `aa_weather` on its own at the R prompt. If we assume that `NA` means no data, then we can use a special argument to `sum` to treat `NA` values as zeros, `na.rm=TRUE`.
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
 	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 The data for 1891 started in October, which explains why it has relatively little precipitation. Again, whether to treat the `NA` values as zeroes really depends on what they represent for your data. For this dataset, I'm content to treat them as zeroes. I would like to get rid of the partial data for 1891 and 2020 with `filter`
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -82,9 +127,14 @@ aa_weather %>%
 	filter(year != 1891 & year != 2020) # note that != is the opposite of ==, i.e not equal to
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Excellent! These data are sorted by year, how would we sort it by `annual_precip_mm`? We can use the `arrange` function
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -93,9 +143,14 @@ aa_weather %>%
 	arrange(annual_precip_mm)
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 That does an ascending sort and shows that 1955, 1963, and 1934 were the dryest years. To do a descending sort, we need to include the `desc` function
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -104,11 +159,16 @@ aa_weather %>%
 	arrange(desc(annual_precip_mm))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 That shows 7 of the 10 wettest years were since 2000.
 
 We can also plot these data to get a sense of any trends in the data
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -118,9 +178,14 @@ aa_weather %>%
 		geom_line()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 It really does appear that total precipitation starts to move upwards after 1960.  We can make this more evident by adding a smoothed line through the data with `geom_smooth`
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -131,69 +196,129 @@ aa_weather %>%
 		geom_smooth()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Gulp. Hopefully, this progression of our analysis makes sense. We identified and created an attribute that we wanted to group our data by using `mutate`, grouped the data by the year using `group_by`, and totaled the amount of precipitation for the year with `summarize`. This workflow is amazingly powerful.
 
 I should make one final point on this example. Previously, we discussed using functions to make our code DRY. We can also use variables to make our code DRY. In the last few code chunks, we've repeated a lot of the same code to generate the summary table. We should probably save that as a data frame and then do operations on that data frame.
 
-```{r}
+
+```r
 annual_precipitation <- aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
 	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
 	filter(year != 1891 & year != 2020)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
+```r
 annual_precipitation %>%
 	arrange(desc(annual_precip_mm))
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'annual_precipitation' not found
+```
+
+```r
 annual_precipitation %>%
 	ggplot(aes(x=year, y=annual_precip_mm)) +
 		geom_line() +
 		geom_smooth()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'annual_precipitation' not found
+```
+
 
 Questions
 * Which years had the most snowfall? How do the trends in those data look?
 
-```{r}
+
+```r
 annual_snowfall <- aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
 	summarize(annual_snowfall_mm = sum(snow_fall_mm, na.rm=TRUE)) %>%
 	filter(year != 1891 & year != 2020)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
+```r
 annual_snowfall %>%
 	arrange(desc(annual_snowfall_mm))
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'annual_snowfall' not found
+```
+
+```r
 annual_snowfall %>%
 	ggplot(aes(x=year, y=annual_snowfall_mm)) +
 		geom_line() +
 		geom_smooth()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'annual_snowfall' not found
+```
+
 * Which months have the most precipitation?
 
-```{r}
+
+```r
 monthly_precipitation <- aa_weather %>%
 	mutate(month = month(date)) %>%
 	group_by(month) %>%
 	summarize(monthly_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
 	filter(month != 1891 & month != 2020)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
+```r
 monthly_precipitation %>%
 	arrange(desc(monthly_precip_mm))
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'monthly_precipitation' not found
+```
+
+```r
 monthly_precipitation %>%
 	ggplot(aes(x=month, y=monthly_precip_mm)) +
 		geom_line() +
 		geom_smooth()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'monthly_precipitation' not found
+```
+
 Let's work on the second question of how typical the weather was on my birth date. To ease into this type of question, let's get the weather in Ann Arbor on the day I was born - June 20, 1976 or 1976-06-20.
 
-```{r}
+
+```r
 aa_weather %>%
 	filter(date == "1976-06-20")
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
 ```
 
 That is a perfect Pat Schloss day! Cool and dry. Maybe there were a couple of fluffy clouds in the sky. I'd like to know how typical that day's temperature (low of 11.1 C and high of 24.4 C) and lack of rain fall are for June 20th or any other day of the year. What I'd like to do is group all of the data by the month and day and return the median weather data along with the 95% confidence interval for the weather observation on each day.
@@ -209,25 +334,36 @@ That should look pretty familiar. I want to emphasize that thinking through the 
 
 We'll start with creating a month and day column with `mutate`
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
 	select(month, day, everything())
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 That looks right. Now we want to group by those two new columns. Previously, we grouped by a single column. To group by two or more columns, we separate the variables with commas
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
 	group_by(month, day)
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Now that we've grouped the data, we see the line, `# Groups:   month, day [366]`. We are now set to summarize the data
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
@@ -235,9 +371,14 @@ aa_weather %>%
 	summarize(t_med_c = median(t_max_c))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Here we're using the `median` function to get the median value of `t_max_c` within the desired month and day combination. We can use any function in `summarize`, including those we create, as long as the functions return a single value. Other functions you'll find useful include `mean`, `sd`, `IQR`, `max`, `min`, `quartile`, and `n`. Similar to the `mutate` function, we can create additional columns in the `summarize` function by separating them by commas. Let's try this with the 2.5 and 97.5 percentiles using the `quantile` function and adding a column that indicates the number of obserations we have.
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
@@ -248,9 +389,14 @@ aa_weather %>%
 		n = n())
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Here we get an error about `NA` values. Let's go ahead and ignore these in our calculations
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
@@ -261,9 +407,14 @@ aa_weather %>%
 		n = n())
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 Cool, eh? Something you might notice in the output is that it looks like we are still workign with grouped data. This can cause problems down the road, so we should use `ungroup` to ungroup the data. We'll also assign this pipeline to a variable so we aren't copying the code over and over
 
-```{r}
+
+```r
 daily_temps <- aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
@@ -275,43 +426,74 @@ daily_temps <- aa_weather %>%
 	ungroup()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 
 Now let's use `filter` to get the information for my birthday and remind ourselves of what it was in 1976
 
-```{r}
+
+```r
 daily_temps %>%
 	filter(month == 6 & day == 20)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
+```r
 aa_weather %>%
 	filter(date == "1976-06-20")
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 We see that the temperature on the day I was born was a few degrees cooler than the median temperature over the past 128 years. To plot these data to visually find the temperature for any day of the year we need to think about our x-axis value. We have lost the date because we summarized on `month` and `day`. We can create a new date column by making R think that it is always 2020 - this is a good choice because 2020 is a leap year. We'll make a new column called `date` that is the year, month, and day pasted with hyphens. We can do this pasting with the `paste` function.
 
-```{r}
+
+```r
 daily_temps %>%
 	mutate(date = paste(2020, month, day, sep='-'))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
 We see that the `date` column is a character format, but we'd like it to be a date format. We can convert this ISO-ish format to true ISO date format by wrapping the `ymd` function around our `paste` function.
 
-```{r}
+
+```r
 daily_temps %>%
 	mutate(date = ymd(paste(2020, month, day, sep='-')))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
 Now we can feed this into ggplot to plot our data
 
-```{r}
+
+```r
 daily_temps %>%
 	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
 	ggplot(aes(x=date, y=t_med_c)) +
 	geom_line()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
 We can also add the confidence intervals using `geom_errorbar`
 
-```{r}
+
+```r
 daily_temps %>%
 	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
 	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
@@ -319,7 +501,12 @@ daily_temps %>%
 	geom_errorbar(color="gray")
 ```
 
-```{r}
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
+
+```r
 daily_temps %>%
 	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
 	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
@@ -327,9 +514,14 @@ daily_temps %>%
 	geom_line(color="black")
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
 What is the temperature generally like on June 20th?
 
-```{r}
+
+```r
 daily_temps %>%
 	mutate(date = ymd(paste(2020, month, day, sep='-'))) %>%
 	ggplot(aes(x=date, y=t_med_c, ymin=t_lci_c, ymax=t_uci_c)) +
@@ -338,13 +530,18 @@ daily_temps %>%
 	geom_vline(xintercept=ymd("2020-06-20"))
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'daily_temps' not found
+```
+
 
 
 
 Questions
 * Make a histogram of high temperatures recoded on your birthday and add a vertical line to indicate the temperature of the day you were born.
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(month = month(date),
 		day = day(date)) %>%
@@ -354,9 +551,14 @@ aa_weather %>%
 		geom_vline(xintercept=24.4)
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 * Make a line plot of the average daily high temperature
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date), month = month(date)) %>%
 	group_by(year) %>%
@@ -366,9 +568,14 @@ aa_weather %>%
 		geom_line()
 ```
 
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
+```
+
 * Make a scatter plot of the total yearly precipitation on the y-axis and the average annual high temperature on the x-axis. Plot the year using the color aesthetic.
 
-```{r}
+
+```r
 aa_weather %>%
 	mutate(year = year(date)) %>%
 	group_by(year) %>%
@@ -377,4 +584,8 @@ aa_weather %>%
 	filter(year != 1891 & year != 2020) %>%
 	ggplot(aes(x=t_mean_c, y=annual_precip_mm, color=year)) +
 		geom_point()
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'aa_weather' not found
 ```

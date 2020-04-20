@@ -1,5 +1,28 @@
+---
+layout: lesson
+title: "Session 10"
+output: markdown_document
+---
 
-## Chapter 10
+## Topics
+*
+
+
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+
+opts_chunk$set("echo" = TRUE)
+opts_chunk$set("eval" = TRUE)
+opts_chunk$set("message" = FALSE)
+opts_chunk$set("warning" = FALSE)
+opts_chunk$set("cache" = FALSE)
+
+opts_chunk$set("fig.retina" = 4)
+opts_chunk$set("results" = "hold")
+opts_chunk$set("fig.show" = "hold")
+opts_chunk$set("fig.width" = 7)
+```
 
 The plots we've been making are interesting, but they aren't the quality of a figure that you'd want to publish or even tweet out to your friends. Let's work with a few figures to see if we can make them more attractive.
 

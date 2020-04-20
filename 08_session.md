@@ -1,0 +1,385 @@
+---
+layout: lesson
+title: "Session 8"
+output: markdown_document
+---
+
+## Topics
+*
+
+
+
+
+By the end of the last lesson, if you did all of the exercises, you should have come up with something like the code chunk below. Go ahead and copy this into a file called `weather.R` and save the file.
+
+
+```r
+library(tidyverse)
+
+aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
+	select(DATE, starts_with("T"), PRCP, SNOW, SNWD) %>%
+	rename("date" = "DATE",
+		"t_max_c" = "TMAX",
+		"t_min_c" = "TMIN",
+		"t_obs_c" = "TOBS",
+		"total_precip_mm" = "PRCP",
+		"snow_fall_mm" = "SNOW",
+		"snow_depth_mm" = "SNWD") %>%
+	mutate(t_obs_c = ifelse(t_obs_c > 40 | t_obs_c < -40, NA, t_obs_c),
+		total_precip_mm = ifelse(total_precip_mm > 250, NA, total_precip_mm),
+		snow_fall_mm = ifelse(snow_fall_mm > 500, NA, snow_fall_mm),
+		snow_depth_mm = ifelse(snow_depth_mm > 500, NA, snow_depth_mm)
+	)
+```
+
+We've spent the last two lessons "munging" our data to get it to look and behave nicely. If this is the level of detail we need to go to to clean up data from NOAA, can you imagine how much effort might be needed to clean up the data from the last postdoc in your lab?! We generally spend *a lot* of time cleaning up data. Let's start doing something "useful" with these data!
+
+Can you remember what command we use to either change or create a new column in a data frame? We've seen it a few times already and now we're going to do a deeper dive into using it to help analyze our data. As I showed in the previous lesson, I am a good American: I have little intuition for the metric system. I'd like to make columns that have the temperatures in Fahrenheit and precipitation data in inches. The function we'll use is `mutate` to generate these new columns. In addition, we'll see how to generate our own functions that we can use with `mutate` and many other settings.
+
+In the previous lesson, I demonstrated the `mutate` function by showing that we could create a  `t_max_f` column using the data in the `t_max_c` column. To illustrate a problem, I'm going to use the rule of thumb I learned from too many degrees in engineering: we can double the temperature in Celsius and add 30 to get the temperature in Fahrenheit.
+
+
+```r
+aa_weather %>%
+	mutate(t_max_f = 2 * t_max_c + 30) %>%
+	select(date, t_max_c, t_max_f)
+```
+
+```
+## # A tibble: 46,650 x 3
+##    date       t_max_c t_max_f
+##    <date>       <dbl>   <dbl>
+##  1 1891-10-01    20.6    71.2
+##  2 1891-10-02    26.7    83.4
+##  3 1891-10-03    26.1    82.2
+##  4 1891-10-04    22.8    75.6
+##  5 1891-10-05    13.9    57.8
+##  6 1891-10-06    14.4    58.8
+##  7 1891-10-07    10.6    51.2
+##  8 1891-10-08    13.9    57.8
+##  9 1891-10-09    15      60  
+## 10 1891-10-10    16.7    63.4
+## # … with 46,640 more rows
+```
+
+We can do the same for the two other temperature columns
+
+
+```r
+aa_weather %>%
+	mutate(t_max_f = 2 * t_max_c + 30,
+		t_min_f = 2 * t_min_c + 30,
+		t_obs_f = 2 * t_obs_c + 30) %>%
+	select(date, starts_with("t_"))
+```
+
+```
+## # A tibble: 46,650 x 7
+##    date       t_max_c t_min_c t_obs_c t_max_f t_min_f t_obs_f
+##    <date>       <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+##  1 1891-10-01    20.6     7.8      NA    71.2    45.6      NA
+##  2 1891-10-02    26.7    13.9      NA    83.4    57.8      NA
+##  3 1891-10-03    26.1    16.1      NA    82.2    62.2      NA
+##  4 1891-10-04    22.8    11.1      NA    75.6    52.2      NA
+##  5 1891-10-05    13.9     6.7      NA    57.8    43.4      NA
+##  6 1891-10-06    14.4     5        NA    58.8    40        NA
+##  7 1891-10-07    10.6     5.6      NA    51.2    41.2      NA
+##  8 1891-10-08    13.9     3.3      NA    57.8    36.6      NA
+##  9 1891-10-09    15       3.9      NA    60      37.8      NA
+## 10 1891-10-10    16.7     5        NA    63.4    40        NA
+## # … with 46,640 more rows
+```
+
+Excellent! There's one problem with this code chunk. We repeat the equation to convert between Celsius and Fahrenheit three times. I could imagine getting data from another station that had other temperature data - soil, dew point, etc. We would repeat this same equation over and over if we wanted to convert to Fahrenheit. Given my proclivity to typos, I can imagine that at least one of these equations would have a typo. That would be a headache. Also, imagine this project takes off and I want to publish it or make it accessible to the public. I probably want to replace my rule of thumb with the actual formula (F = 9/5 * C +32). I would need to replace every instance of the rule of thumb with the actual conversion. Again, more headaches.
+
+There is a principle we like to follow called DRY - don't repeat yourself. We can overcome this repetition by creating a function. We've see a lot of functions already. The last code chunk has at least seven! `%>%`, `=`, `*`, `+`, `mutate`, `select`, and `starts_with`. To create a function we need a special syntax
+
+```r
+my_function <- function(argument1, argument2, etc.){
+
+	# your function's special sauce
+
+	result <- #special sauce
+
+	return(result)
+}
+```
+
+There are other ways to write a function that allow you to set default values or simplify the syntax. What we have will work great for our purposes for a long time. The key points are that the function is a variable that gets is "value" from the `function` function. You give `function` the arguments that are then used in the body of the function, which is organized within curly braces (i.e. `{`, `}`). The last thing in the body of our function is a call to the `return` function, which makes the value the function returns explicit. When the flow hits `return`, the function is done. If you put any code after `return`, it will not be run.
+
+You could then call the function like so...
+
+
+```r
+my_function(argument1=4, argument2=23)
+```
+
+```
+## Error in my_function(argument1 = 4, argument2 = 23): could not find function "my_function"
+```
+
+This will return a value that you set in the `return` function from when you defined your function. It is a good time to point out we've been a bit loose with how we've called our previous functions so far. For example, previously we ran
+
+```r
+tolower(Admin1Name)
+```
+
+That `tolower` function call does not have any argument names listed, only the argument value. If we enter `?tolower`, under the "Usage" and "Arguments" sections we'll see...
+
+```R
+Usage:
+
+     chartr(old, new, x)
+     tolower(x)
+     toupper(x)
+     casefold(x, upper = FALSE)
+
+Arguments:
+
+       x: a character vector, or an object that can be coerced to
+          character by ‘as.character’.
+
+     old: a character string specifying the characters to be
+          translated.  If a character vector of length 2 or more is
+          supplied, the first element is used with a warning.
+
+     new: a character string specifying the translations. If a
+          character vector of length 2 or more is supplied, the first
+          element is used with a warning.
+
+   upper: logical: translate to upper or lower case?.
+```
+
+This tells us that `tolower` takes one argument - `x`. We could have written
+
+```R
+tolower(x=Admin1Name)
+```
+
+But we're lazy and after you've used R a bit, that will seem a bit obvious. Like the `<-`, whether to use argument names is an idiom in R. This can be confusing for beginners. It can also be a pain for beginners to remember all of the argument names! If you chose to leave out the argument names, then they need to be in the order that the function expects them. For example, the following works
+
+
+```r
+dna <- "ATGCCTTG"
+chartr("ATGC", "TACG", dna)
+```
+
+```
+## [1] "TACGGAAC"
+```
+
+But this does not (I regularly make this mistake!)
+
+
+```r
+dna <- "ATGCCTTG"
+chartr(dna, "ATGC", "TACG")
+```
+
+```
+## Error in chartr(dna, "ATGC", "TACG"): 'old' is longer than 'new'
+```
+
+If you are unsure of the syntax or if your arguments get complicated, you are perfectly justified to include the argument names.
+
+
+```r
+dna <- "ATGCCTTG"
+chartr(x=dna, old="ATGC", new="TACG")
+```
+
+```
+## [1] "TACGGAAC"
+```
+
+Back to our example, the following function calls will give the same result
+
+```R
+my_function(4, 23)
+my_function(argument1=4, argument2=23)
+my_function(argument2=23, argument1=4)
+```
+
+But this will either give you an incorrect result or an error
+
+```R
+my_function(23, 4)
+```
+
+Enough with abstract functions! Let's work on our function to convert Celsius to Fahrenheit.
+
+
+```r
+c_to_f <- function(celsius) {
+
+	fahrenheit <- 2 * celsius + 30
+	return(fahrenheit)
+
+}
+```
+
+We can test this with a few temperatures
+
+
+```r
+c_to_f(0)
+c_to_f(20)
+c_to_f(30)
+c_to_f(100)
+```
+
+```
+## [1] 30
+## [1] 70
+## [1] 90
+## [1] 230
+```
+
+We can also make our original mutate code DRY
+
+
+```r
+aa_weather %>%
+	mutate(t_max_f = c_to_f(t_max_c),
+		t_min_f = c_to_f(t_min_c),
+		t_obs_f = c_to_f(t_obs_c)) %>%
+	select(date, starts_with("t_"))
+```
+
+```
+## # A tibble: 46,650 x 7
+##    date       t_max_c t_min_c t_obs_c t_max_f t_min_f t_obs_f
+##    <date>       <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+##  1 1891-10-01    20.6     7.8      NA    71.2    45.6      NA
+##  2 1891-10-02    26.7    13.9      NA    83.4    57.8      NA
+##  3 1891-10-03    26.1    16.1      NA    82.2    62.2      NA
+##  4 1891-10-04    22.8    11.1      NA    75.6    52.2      NA
+##  5 1891-10-05    13.9     6.7      NA    57.8    43.4      NA
+##  6 1891-10-06    14.4     5        NA    58.8    40        NA
+##  7 1891-10-07    10.6     5.6      NA    51.2    41.2      NA
+##  8 1891-10-08    13.9     3.3      NA    57.8    36.6      NA
+##  9 1891-10-09    15       3.9      NA    60      37.8      NA
+## 10 1891-10-10    16.7     5        NA    63.4    40        NA
+## # … with 46,640 more rows
+```
+
+This should give the same result we had before without using the function (or perhaps you found a typo in your previous non-DRY code and now the result is better!). Excellent - the code is now DRY. But as we feared, our analysis has attracted attention and we feel bad that we can't remember the actual conversion and we are relying on this rule of thumb. To update all three lines in the mutate function we need to modify our `c_to_f` function
+
+
+```r
+c_to_f <- function(celsius) {
+
+	fahrenheit <- 9/5 * celsius + 32
+	return(fahrenheit)
+
+}
+```
+
+We need to re-run this function call and then re-run our pipeline
+
+
+```r
+aa_weather %>%
+	mutate(t_max_f = c_to_f(t_max_c),
+		t_min_f = c_to_f(t_min_c),
+		t_obs_f = c_to_f(t_obs_c)) %>%
+	select(date, starts_with("t_"))
+```
+
+```
+## # A tibble: 46,650 x 7
+##    date       t_max_c t_min_c t_obs_c t_max_f t_min_f t_obs_f
+##    <date>       <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+##  1 1891-10-01    20.6     7.8      NA    69.1    46.0      NA
+##  2 1891-10-02    26.7    13.9      NA    80.1    57.0      NA
+##  3 1891-10-03    26.1    16.1      NA    79.0    61.0      NA
+##  4 1891-10-04    22.8    11.1      NA    73.0    52.0      NA
+##  5 1891-10-05    13.9     6.7      NA    57.0    44.1      NA
+##  6 1891-10-06    14.4     5        NA    57.9    41        NA
+##  7 1891-10-07    10.6     5.6      NA    51.1    42.1      NA
+##  8 1891-10-08    13.9     3.3      NA    57.0    37.9      NA
+##  9 1891-10-09    15       3.9      NA    59      39.0      NA
+## 10 1891-10-10    16.7     5        NA    62.1    41        NA
+## # … with 46,640 more rows
+```
+
+Again, the strength of DRY code is that it prevents us from inserting typos and allows us to easily change our code in one place and get it updated everywhere that code is used. Although we should always try to be aware of where our code is not DRY, your primary goal should be to get code that works. Once it works, you should go back and DRY it out. This will help you make sure it works correctly and insure that it's easier to maintain.
+
+
+Questions
+* Create a column in `aa_weather` that contains the difference between the day's maximum and minimum temperatures. Be sure to give the column a good name! Include a `select` function call so that you can more easily see the relevant columns
+
+
+```r
+aa_weather %>%
+	mutate(t_diff_c = t_max_c - t_min_c) %>%
+	select(date, t_max_c, t_min_c, t_diff_c)
+```
+
+```
+## # A tibble: 46,650 x 4
+##    date       t_max_c t_min_c t_diff_c
+##    <date>       <dbl>   <dbl>    <dbl>
+##  1 1891-10-01    20.6     7.8     12.8
+##  2 1891-10-02    26.7    13.9     12.8
+##  3 1891-10-03    26.1    16.1     10  
+##  4 1891-10-04    22.8    11.1     11.7
+##  5 1891-10-05    13.9     6.7      7.2
+##  6 1891-10-06    14.4     5        9.4
+##  7 1891-10-07    10.6     5.6      5  
+##  8 1891-10-08    13.9     3.3     10.6
+##  9 1891-10-09    15       3.9     11.1
+## 10 1891-10-10    16.7     5       11.7
+## # … with 46,640 more rows
+```
+
+* Create a function called `mm_to_inches` that converts millimeters to inches. There are 10 millimeters in a centimeter and 2.54 centimeters in an inch. Test it out with a few values like 0, 25.4, 50.8, 101.6, and 40.
+
+
+```r
+mm_to_inches <- function(mm) {
+
+	inches = mm / 10 / 2.54
+	return(inches)
+
+}
+
+mm_to_inches(0)
+mm_to_inches(25.4)
+mm_to_inches(50.8)
+mm_to_inches(101.6)
+mm_to_inches(40)
+```
+
+```
+## [1] 0
+## [1] 1
+## [1] 2
+## [1] 4
+## [1] 1.574803
+```
+
+* Create columns in `aa_weather` that convert the three precipitation-related columns to inches.
+
+
+```r
+aa_weather %>%
+	mutate(total_precip_in = mm_to_inches(total_precip_mm),
+		snow_fall_in = mm_to_inches(snow_fall_mm),
+		snow_depth_in = mm_to_inches(snow_depth_mm)) %>%
+	select(ends_with("_mm"), ends_with("_in")) %>%
+	tail()
+```
+
+```
+## # A tibble: 6 x 6
+##   total_precip_mm snow_fall_mm snow_depth_mm total_precip_in snow_fall_in
+##             <dbl>        <dbl>         <dbl>           <dbl>        <dbl>
+## 1             0              0             0          0             0    
+## 2             7.9            0             0          0.311         0    
+## 3            15.2            0             0          0.598         0    
+## 4             3.8            5             0          0.150         0.197
+## 5             1             20             0          0.0394        0.787
+## 6             0              0             0          0             0    
+## # … with 1 more variable: snow_depth_in <dbl>
+```
