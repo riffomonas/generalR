@@ -1,0 +1,17 @@
+.sass-cache
+.jekyll-cache
+_site
+.jekyll-metadata
+
+code/
+figures/
+processed_data/
+
+\.DS_Store
+
+ordination.pdf
+ordination.png
+
+_book/
+_bookdown_files/
+
