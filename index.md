@@ -101,7 +101,11 @@ title: generalR
 
 	<li><a href="12_session.html">IPEDS: Session 12</a></li>
 	<ul>
-		<li></li>
+		<li>Rinse, repeat to answer new questions</li>
+		<li>Plotting continuous data against categorical data</li>
+		<li>Using `factor` to order categorical variables</li>
+		<li>Thinking of our data as paired and redefining tidy</li>
+</li>
 	</ul>
 
 	<li><a href="13_session.html">IPEDS: Session 13</a></li>

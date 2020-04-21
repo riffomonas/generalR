@@ -5,8 +5,10 @@ output: markdown_document
 ---
 
 ## Topics
-*
-
+* Rinse, repeat to answer new questions
+* Plotting continuous data against categorical data
+* Using `factor` to order categorical variables
+* Thinking of our data as paired and redefining tidy
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
@@ -24,19 +26,21 @@ opts_chunk$set("fig.show" = "hold")
 opts_chunk$set("fig.width" = 7)
 ```
 
-Before tacking representation within a specific (or broad) discipline, I'd like to understand representation of students graduating with a Bachelor's degree in 2018 at different types of institutions. Within the US there are different categories of schools based on their mission. One way of doing this is by using a [framework](http://carnegieclassifications.iu.edu/definitions.php) developed by the Carnegie Commission on Higher Education in 1970 and modified since. The data for the 2000 definition are provided in the `CARNEGIE` column of `ipdeds/hd2018.csv` (there are newer definitions that break down institutions into finer categories). Let's ease into our analysis by reading in the awards data again finding the total number of Bachelor's degrees conferred at each institution. We'll take advantage of the observation that CIP code 99 indicates the total number of degrees awarded at the institution and that AWLEVEL "05" is for the Bachelor's degree. Then we'll bring in the institution name and its Carnegie information.
+## Rinse, repeat to answer new questions
+
+Before tacking representation within a specific (or broad) discipline, I'd like to understand representation of students graduating with a Bachelor's degree in 2018 at different types of institutions. Within the US there are different categories of schools based on their mission. One way of doing this is by using a [framework](http://carnegieclassifications.iu.edu/definitions.php) developed by the Carnegie Commission on Higher Education in 1970 and modified since. The data for the 2000 definition are provided in the `CARNEGIE` column of `ipeds/hd2018.csv` (there are newer definitions that break down institutions into finer categories). Let's ease into our analysis by reading in the awards data again finding the total number of Bachelor's degrees conferred at each institution. We'll take advantage of the observation that CIP code 99 indicates the total number of degrees awarded at the institution and that AWLEVEL "05" is for the Bachelor's degree. Then we'll bring in the institution name and its Carnegie information.
 
 ```{R}
 library(tidyverse)
 
-bachelors_degrees <- read_csv("ipdeds/c2018_a.csv") %>%
+bachelors_degrees <- read_csv("ipeds/c2018_a.csv") %>%
 	filter(MAJORNUM == 1 & CIPCODE == "99" & AWLEVEL == "05" & CTOTALT > 0)
 ```
 
 To make the data frame easier to look at I'll remove these columns that we filtered on as well as any column that starts with an "X" (the X indicates how the data were generated).
 
 ```{r}
-bachelors_degrees <- read_csv("ipdeds/c2018_a.csv") %>%
+bachelors_degrees <- read_csv("ipeds/c2018_a.csv") %>%
 	filter(MAJORNUM == 1 & CIPCODE == "99" & AWLEVEL == "05" & CTOTALT > 0) %>%
 	select(-CIPCODE, -MAJORNUM, -AWLEVEL, -starts_with("x"))
 ```
@@ -44,7 +48,7 @@ bachelors_degrees <- read_csv("ipdeds/c2018_a.csv") %>%
 We're left with the column for the institution identifier ("UNITID") and the counts of different groups on campus. Let's bring in the institution name and Carnegie information
 
 ```{r}
-inst_carnegie <- read_csv("ipdeds/hd2018.csv") %>%
+inst_carnegie <- read_csv("ipeds/hd2018.csv") %>%
 	select(UNITID, INSTNM, CARNEGIE)
 ```
 
@@ -53,7 +57,7 @@ Of course, we'd like to bring in the title for each Carnegie code
 ```{r}
 library(readxl)
 
-carnegie_code <- read_excel("ipdeds/hd2018.xlsx", sheet = "Frequencies") %>%
+carnegie_code <- read_excel("ipeds/hd2018.xlsx", sheet = "Frequencies") %>%
 	filter(varname == "CARNEGIE") %>%
 	select(codevalue, valuelabel)
 ```
@@ -77,7 +81,7 @@ inst_carnegie %>%
 Let's rename the `INSTNM` and `valuelabel` columns to make them easier to read, drop the `CARNEGIE` column, and add it to the previous pipeline for generating `inst_carnegie`
 
 ```{r}
-inst_carnegie <- read_csv("ipdeds/hd2018.csv") %>%
+inst_carnegie <- read_csv("ipeds/hd2018.csv") %>%
 	select(UNITID, INSTNM, CARNEGIE) %>%
 	mutate(CARNEGIE = as.character(CARNEGIE)) %>%
 	inner_join(., carnegie_code, by=c("CARNEGIE" = "codevalue")) %>%
@@ -110,6 +114,9 @@ bachelor_demographics %>%
 ```
 
 These results are pretty interesting! The types of schools that have the most women are health related (nursing?) and Tribal colleges. Those with the poorest representation of women are business, engineering and technology, and theological schools.
+
+
+## Plotting continuous data against categorical data
 
 Believe it or not, we've done a lot of analysis so far in this lesson and we haven't learned any new syntax. Let's change that and see how we might plot these data. The first type of plot is a strip or jitter plot. Personally, I like these types of plots because they show every data point. This can also be their downfall because the plots can get a bit busy. We will plot the Carnegie category on the x-axis and the fraction of women on the y-axis
 
@@ -164,6 +171,7 @@ bachelor_demographics %>%
 		coord_flip()
 ```
 
+
 To reduce the number of columns, let's remove those institutions that are "not in the Carnegie universe" and those categories with fewer than 100 institutions. That will still leave us with 8 categories. I'm not interested in typing those in, so let's see if we can do this with a join.
 
 ```{r}
@@ -183,6 +191,9 @@ bachelor_demographics %>%
 		geom_boxplot() +
 		coord_flip()
 ```
+
+
+## Using `factor` to order categorical variables
 
 How about if we want to order the categories by their median values? I would break up the last pipeline into three parts. The first to create a data frame with the fraction of women (i.e. `representation`). Then I would generate a summary table that is ordered by the median value of `f_women` (i.e. `carnegie_summary`). Then I would use the order of the `carnegie` column ni the `carnegie_summary` table to set the order of levels of the `carnegie` column in `representation` and create the plot. Let's see how that plan works out
 
@@ -207,20 +218,20 @@ representation %>%
 
 The two "tricks" here are using `pull` to create a vector, `carnegie_ordered`, which is the order of the categories as we want them in the plots. Then we used that vector to set the order of `levels` in `factor` when building the plot. We could do more to "beautify" the figure, but let's move on to other questions.
 
-Instead of looking across all types of institutions, Let's look instead at the representation of women among institutions in the "Doctoral/Research Universities--Extensive" category. We'll look at the Bachelor's (AWLEVEL: 05) and Doctoral (Research) (AWLEVEL: 17) graduates from these institutions. As we did earlier, we'll begin by filtering the data in `ipdeds/hd2018.csv` to obtain data from institutions in the "Doctoral/Research Universities--Extensive" category, which we saw earlier was CARNEGIE codes 15.
+Instead of looking across all types of institutions, Let's look instead at the representation of women among institutions in the "Doctoral/Research Universities--Extensive" category. We'll look at the Bachelor's (AWLEVEL: 05) and Doctoral (Research) (AWLEVEL: 17) graduates from these institutions. As we did earlier, we'll begin by filtering the data in `ipeds/hd2018.csv` to obtain data from institutions in the "Doctoral/Research Universities--Extensive" category, which we saw earlier was CARNEGIE codes 15.
 
 ```{R}
 library(tidyverse)
 
-doc_institutions <- read_csv("ipdeds/hd2018.csv") %>%
+doc_institutions <- read_csv("ipeds/hd2018.csv") %>%
 	filter(CARNEGIE == "15") %>%
 	select(UNITID, INSTNM)
 ```
 
-That results in a data frame with 258 institutions. Now we need to get the Bachelor's, Master's, and Doctorate awards data from the `ipdeds/c2018_a.csv` data frame and join it with the `doc_institutions` data frame.
+That results in a data frame with 258 institutions. Now we need to get the Bachelor's, Master's, and Doctorate awards data from the `ipeds/c2018_a.csv` data frame and join it with the `doc_institutions` data frame.
 
 ```{r}
-read_csv("ipdeds/c2018_a.csv") %>%
+read_csv("ipeds/c2018_a.csv") %>%
 	filter(MAJORNUM == 1 & CIPCODE == "99" & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17")) %>%
 	inner_join(doc_institutions, ., by="UNITID")
 ```
@@ -228,7 +239,7 @@ read_csv("ipdeds/c2018_a.csv") %>%
 As we did earlier, we can clean this up a bit to remove the extra columns and assign the output to a variable.
 
 ```{r}
-doc_degrees <- read_csv("ipdeds/c2018_a.csv") %>%
+doc_degrees <- read_csv("ipeds/c2018_a.csv") %>%
 	filter(MAJORNUM == 1 & CIPCODE == "99" & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17")) %>%
 	inner_join(doc_institutions, ., by="UNITID") %>%
 	select(-CIPCODE, -MAJORNUM, -starts_with("X"))
@@ -250,7 +261,10 @@ doc_degree_rates %>%
 		geom_boxplot()
 ```
 
-From these data, it appears that the fraction of women who graduate with a doctorate is less than those that graduate with a bachelor's degree. Alternatively, we could plot the data as a slope plot by connecting the bachelor's rate to the doctorate rate.
+
+## Thinking of our data as paired and redefining tidy
+
+From the previous figure, it appears that the fraction of women who graduate with a doctorate is less than those that graduate with a bachelor's degree. Alternatively, we could plot the data as a slope plot by connecting the bachelor's rate to the doctorate rate.
 
 ```{r}
 doc_degree_rates %>%
@@ -258,7 +272,7 @@ doc_degree_rates %>%
 		geom_line()
 ```
 
-It would be good to quantify the difference between the representation at the two award levels. You should be thinking about using `group_by` and `summarize`. The challenge is that we would like to group by institution and calculate the difference between the two levels. Unfortunately, we can't easily calculate the difference between rows; only columns. To pull this off, we need to spread our `f_women` column across two columns corresponding to the two award levels. To do this, we will use the `pivot_wider` function. To demonstrate it, let's simplify our `doc_degree_rates` data frame a bit.
+It would be good to quantify the difference between the representation at the two award levels. You should be thinking about using `group_by` and `summarize`. The challenge is that we would like to group by institution and calculate the difference between the two levels. Unfortunately, we can't easily calculate the difference between rows; only columns. To pull this off, we need to spread our `f_women` column across two columns corresponding to the two award levels. Our data frame has been "tidy" for our purposes, but now it is not - we actually need to make it wider to make it tidy! To do this, we will use the `pivot_wider` function. To demonstrate it, let's simplify our `doc_degree_rates` data frame a bit.
 
 ```{r}
 doc_degree_rates %>%
@@ -296,9 +310,124 @@ doc_degree_rates %>%
 
 At the most extensive doctorate institution, the percentage of women earning a doctorate degree after earning a bachelor's falls by nearly 6 percentage points or more than 10%.
 
-Questions
-* Repeat the cross Carnegie category analysis with the "Black or African American" data
 
-* Repeat the gender analysis with the "Doctoral/Research Universities--Extensive" Carnegie category
+## Questions
 
-* Repeat the gender analysis with the "Doctoral/Research Universities--Extensive" Carnegie category, but use the "Black or African American" data
+1\. Using `bachelor_demographics`, repeat the analysis we did to compare the fraction of women graduating with bachelor's degrees across Carnegie categories, but use the fraction of "Black or African American" graduates instead. Can you obtain the median rate of "Black or African American" bachelor's degree students for each category and the number of schools in each category?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+bachelor_bkaa <- bachelor_demographics %>%
+	inner_join(., carnegie_categories, by="carnegie") %>%
+	mutate(f_bkaa =CBKAAT/CTOTALT) %>%
+	select(carnegie, f_bkaa)
+
+bachelor_bkaa %>%
+	ggplot(aes(x=carnegie, y=f_bkaa)) +
+		geom_boxplot() +
+		coord_flip()
+
+bachelor_bkaa %>%
+	group_by(carnegie) %>%
+	summarize(median = median(f_bkaa), n=n()) %>%
+	arrange(desc(median))
+```
+</div>
+
+2\. Generate a slop plot showing the differences in gender representation among graduates awarded bachelors and doctorate degrees using the data from the "Doctoral/Research Universities--Intensive" Carnegie category data. What is the average difference in representation by degree?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+doc_institutions <- read_csv("ipeds/hd2018.csv") %>%
+	filter(CARNEGIE == "16") %>%
+	select(UNITID, INSTNM)
+
+degree_rates <- read_csv("ipeds/c2018_a.csv") %>%
+	filter(MAJORNUM == 1 & CIPCODE == "99" & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17")) %>%
+	inner_join(doc_institutions, ., by="UNITID") %>%
+	select(-CIPCODE, -MAJORNUM, -starts_with("X"))  %>%
+	mutate(f_women = CTOTALW / CTOTALT) %>%
+	select(UNITID, INSTNM, AWLEVEL, f_women)
+
+degree_rates %>%
+	ggplot(aes(x=AWLEVEL, y=f_women, group=UNITID)) +
+		geom_line()
+
+degree_rates %>%
+	select(INSTNM, AWLEVEL, f_women) %>%
+	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
+	mutate(difference = `05` - `17`) %>%
+	summarize(med_bachelors = median(`05`, na.rm=T),
+		med_doctorate = median(`17`, na.rm=T),
+		med_difference = median(difference, na.rm=T))
+```
+</div>
+
+
+3\. Repeat the analysis from Question 2, but quantify the difference in representation among "Black or African American" graduates earning a bachelor's or doctorate degree from institutions in the  "Doctoral/Research Universities--Extensive" Carnegie category
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+doc_institutions <- read_csv("ipeds/hd2018.csv") %>%
+	filter(CARNEGIE == "15") %>%
+	select(UNITID, INSTNM)
+
+degree_rates <- read_csv("ipeds/c2018_a.csv") %>%
+	filter(MAJORNUM == 1 & CIPCODE == "99" & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17")) %>%
+	inner_join(doc_institutions, ., by="UNITID") %>%
+	select(-CIPCODE, -MAJORNUM, -starts_with("X"))  %>%
+	mutate(f_bkaa = CBKAAT / CTOTALT) %>%
+	select(UNITID, INSTNM, AWLEVEL, f_bkaa)
+
+degree_rates %>%
+	ggplot(aes(x=AWLEVEL, y=f_bkaa, group=UNITID)) +
+		geom_line()
+
+degree_rates %>%
+	select(INSTNM, AWLEVEL, f_bkaa) %>%
+	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
+	mutate(difference = `05` - `17`) %>%
+	summarize(med_bachelors = median(`05`, na.rm=T),
+		med_doctorate = median(`17`, na.rm=T),
+		med_difference = median(difference, na.rm=T))
+```
+</div>
+
+
+4\. Using one of the three slope plots we have generated, modify the code to make the line for your institution or your favorite doctorate-awarding institution stand out
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+doc_institutions <- read_csv("ipeds/hd2018.csv") %>%
+	filter(CARNEGIE == "15") %>%
+	select(UNITID, INSTNM)
+
+degree_rates <- read_csv("ipeds/c2018_a.csv") %>%
+	filter(MAJORNUM == 1 & CIPCODE == "99" & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17")) %>%
+	inner_join(doc_institutions, ., by="UNITID") %>%
+	select(-CIPCODE, -MAJORNUM, -starts_with("X"))  %>%
+	mutate(f_bkaa = CBKAAT / CTOTALT) %>%
+	select(UNITID, INSTNM, AWLEVEL, f_bkaa) %>%
+	mutate(highlight = (INSTNM == "University of Michigan-Ann Arbor"))
+
+degree_rates %>%
+	mutate(UNITID = fct_reorder(as_factor(UNITID), highlight)) %>%
+	ggplot(aes(x=AWLEVEL, y=f_bkaa, group=UNITID, color=highlight)) +
+		geom_line(show.legend=FALSE) +
+		scale_color_manual(name="Highlighted",
+			breaks=c(FALSE, TRUE),
+			labels=c("Other Institutions", "University of Michigan-Ann Arbor"),
+			values=c("gray", "blue"))
+
+
+degree_rates %>%
+	select(INSTNM, AWLEVEL, f_bkaa) %>%
+	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
+	mutate(difference = `05` - `17`) %>%
+	filter(INSTNM == "University of Michigan-Ann Arbor")
+```
+</div>
