@@ -11,6 +11,11 @@ title: generalR
 <ol start="0">
 	<li><a href="00_session.html">Introduction</a></li>
 	<ul>
+		<li>Philosophy behind these instructional materials</li>
+		<li>Why R?</li>
+		<li>Introduction to R</li>
+		<li>Installing R, RStudio, and tidyverse</li>
+		<li>Getting settled in RStudio</li>
 	</ul>
 
 	<li><a href="01_session.html">Lyme disease: Session 1</a></li>
@@ -105,10 +110,9 @@ title: generalR
 		<li>Plotting continuous data against categorical data</li>
 		<li>Using `factor` to order categorical variables</li>
 		<li>Thinking of our data as paired and redefining tidy</li>
-</li>
 	</ul>
 
-	<li><a href="13_session.html">IPEDS: Session 13</a></li>
+	<!-- <li><a href="13_session.html">IPEDS: Session 13</a></li>
 	<ul>
 		<li></li>
 	</ul>
@@ -121,7 +125,7 @@ title: generalR
 	<li><a href="15_session.html">IPEDS: Session 15</a></li>
 	<ul>
 		<li></li>
-	</ul>
+	</ul> -->
 
 
 </ol>
