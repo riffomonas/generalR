@@ -93,7 +93,10 @@ title: generalR
 
 	<li><a href="11_session.html">IPEDS: Session 11</a></li>
 	<ul>
-		<li></li>
+		<li>Developing questions and finding data</li>
+		<li>Getting familiar with and focusing on data</li>
+		<li>Working with spreadsheets</li>
+		<li>Joining data frames together</li>
 	</ul>
 
 	<li><a href="12_session.html">IPEDS: Session 12</a></li>
