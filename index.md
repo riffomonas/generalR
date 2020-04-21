@@ -62,7 +62,9 @@ title: generalR
 
 	<li><a href="07_session.html">Weather data: Session 7</a></li>
 	<ul>
-		<li></li>
+		<li>Detecting problems in data/li>
+		<li>Fixing data problems/li>
+		<li>Rinse, repeat</li>
 	</ul>
 
 	<li><a href="08_session.html">Weather data: Session 8</a></li>
