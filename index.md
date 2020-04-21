@@ -76,7 +76,11 @@ title: generalR
 
 	<li><a href="09_session.html">Weather data: Session 9</a></li>
 	<ul>
-		<li></li>
+		<li>Grouping and summarizing data</li>
+		<li>Working with dates</li>
+		<li>Thinking about and visualizing our data</li>
+		<li>DRY revisited</li>
+		<li>Rinse, repeat</li>
 	</ul>
 
 	<li><a href="10_session.html">Weather data: Session 10</a></li>

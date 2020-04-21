@@ -5,7 +5,12 @@ output: markdown_document
 ---
 
 ## Topics
-*
+* Grouping and summarizing data
+* Working with dates
+* Thinking about and visualizing our data
+* DRY revisited
+* Rinse, repeat
+
 
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
@@ -24,15 +29,34 @@ opts_chunk$set("fig.show" = "hold")
 opts_chunk$set("fig.width" = 7)
 ```
 
-We have more than 46,000 rows of data in `aa_weather`. Even in graphical form, that's a lot to digest.
+## Grouping and summarizing data
+
+There's way too much day-to-day variation to get a sense of the year-to-year variation. We have more than 46,000 rows of data in `aa_weather`. Even in graphical form, that's a lot to digest.
 
 ```{r}
+library(tidyverse)
+
+aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
+	select(DATE, starts_with("T"), PRCP, SNOW, SNWD) %>%
+	rename("date" = "DATE",
+		"t_max_c" = "TMAX",
+		"t_min_c" = "TMIN",
+		"t_obs_c" = "TOBS",
+		"total_precip_mm" = "PRCP",
+		"snow_fall_mm" = "SNOW",
+		"snow_depth_mm" = "SNWD") %>%
+	mutate(t_obs_c = ifelse(t_obs_c > 40 | t_obs_c < -40, NA, t_obs_c),
+		total_precip_mm = ifelse(total_precip_mm > 250, NA, total_precip_mm),
+		snow_fall_mm = ifelse(snow_fall_mm > 500, NA, snow_fall_mm),
+		snow_depth_mm = ifelse(snow_depth_mm > 500, NA, snow_depth_mm)
+	)
+
 aa_weather %>%
 	ggplot(aes(x=date, y=t_max_c)) +
 		geom_line()
 ```
 
-There's way too much day-to-day variation to get a sense of the year-to-year variation. We need to do something to intelligently group the data. A lot of questions we might want to answer with these data involve grouping data that is similar and the summarizing the grouped data. For example,
+We need to do something to intelligently group the data. A lot of questions we might want to answer with these data involve grouping data that is similar and the summarizing the grouped data. For example,
 
 * Which year had the most precipitation?
 * How typical was the weather on my birth date?
@@ -40,12 +64,16 @@ There's way too much day-to-day variation to get a sense of the year-to-year var
 * Which year has had the most precipitation?
 * What is the high or low temperature for each day of the year? Which year was it set?
 
+
+## Working with dates
+
 To answer each of these questions, we will need to group the data and then do some type of summary on the grouped data (e.g. `median`, `min`, `max`). The other set of tools we'll need for these particular questions is provided by the `lubridate` package, which we saw with the Project Typcho data. `lubridate` is part of the `tidyverse`. We used the `year` function to extract the year from the date data.
 
 As an aside, the date is one of those things that can be written [many different ways](https://xkcd.com/1179/). How do you write it? I was born on June 20, 1976. How do you most naturally write that date? 20 June 1976? 6/20/1976? 20/6/1976? 6/20/1976? There is a standard format that virtually no one outside of data science uses - ISO 8601. It is expressed as "YYYY-MM-DD". You'll notice that the date column follows this standard and so we need to convert our dates to the standard as well - "1976-06-20". If our data are nicely formatted, there's a lot of useful information that we can extract from that date. A handy [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf) is available to help you with formatting dates, extracting information, and other dates related goodies
 
 ```{r}
-library(lubridate)
+library(lubridate) # don't forget to add this to your script for analyzing weather data. I like
+		# to put all of my library functions together at the top of a script
 
 birth_date <- "1976-06-20"
 year(birth_date) # year
@@ -55,6 +83,8 @@ wday(birth_date) # day of the week with 1 => Monday
 yday(birth_date) # Julian date
 week(birth_date) # week of the year
 ```
+
+## Grouping and summarizing data, doing it
 
 Let's find the year with the most precipitation. Take a moment and think to yourself what you would need to do to figure this out. Don't worry about the R syntax. Write it out in your own words, use pictures, whatever helps you think. Here's my thinking: I need to get the year for each observation in the data frame. Then I need to group the data by the year. Finally, I need to sum the `total_precip_mm` column within each year. You've seen all of these steps before with another application in the Project Tycho data, but we didn't discuss it in depth.
 
@@ -71,8 +101,7 @@ Now we need to group the data by the year. To do this we'll use the `group_by` f
 ```{r}
 aa_weather %>%
 	mutate(year = year(date)) %>%
-	group_by(year) %>%
-	select(year, everything()) # this puts the year column first and then everything else
+	group_by(year)
 ```
 
 This output doesn't look that different than when we ran it without the `group_by` function. If you look closely at the second line of output, you'll see that it indicates, "# Groups:   year [130]". It has grouped our data in to 130 groups - one for each year in the dataset.
@@ -95,6 +124,8 @@ aa_weather %>%
 	summarize(annual_precip_mm = sum(total_precip_mm, na.rm=TRUE))
 ```
 
+## Thinking about and visualizing our data
+
 The data for 1891 started in October, which explains why it has relatively little precipitation. Again, whether to treat the `NA` values as zeroes really depends on what they represent for your data. For this dataset, I'm content to treat them as zeroes. I would like to get rid of the partial data for 1891 and 2020 with `filter`
 
 ```{r}
@@ -116,7 +147,7 @@ aa_weather %>%
 	arrange(annual_precip_mm)
 ```
 
-That does an ascending sort and shows that 1955, 1963, and 1934 were the dryest years. To do a descending sort, we need to include the `desc` function
+That does an ascending sort and shows that 1955, 1963, and 1934 were the driest years. To do a descending sort, we need to include the `desc` function
 
 ```{r}
 aa_weather %>%
@@ -156,6 +187,9 @@ aa_weather %>%
 
 Gulp. Hopefully, this progression of our analysis makes sense. We identified and created an attribute that we wanted to group our data by using `mutate`, grouped the data by the year using `group_by`, and totaled the amount of precipitation for the year with `summarize`. This workflow is amazingly powerful.
 
+
+## DRY revisited
+
 I should make one final point on this example. Previously, we discussed using functions to make our code DRY. We can also use variables to make our code DRY. In the last few code chunks, we've repeated a lot of the same code to generate the summary table. We should probably save that as a data frame and then do operations on that data frame.
 
 ```{r}
@@ -175,42 +209,7 @@ annual_precipitation %>%
 ```
 
 
-Questions
-* Which years had the most snowfall? How do the trends in those data look?
-
-```{r}
-annual_snowfall <- aa_weather %>%
-	mutate(year = year(date)) %>%
-	group_by(year) %>%
-	summarize(annual_snowfall_mm = sum(snow_fall_mm, na.rm=TRUE)) %>%
-	filter(year != 1891 & year != 2020)
-
-annual_snowfall %>%
-	arrange(desc(annual_snowfall_mm))
-
-annual_snowfall %>%
-	ggplot(aes(x=year, y=annual_snowfall_mm)) +
-		geom_line() +
-		geom_smooth()
-```
-
-* Which months have the most precipitation?
-
-```{r}
-monthly_precipitation <- aa_weather %>%
-	mutate(month = month(date)) %>%
-	group_by(month) %>%
-	summarize(monthly_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
-	filter(month != 1891 & month != 2020)
-
-monthly_precipitation %>%
-	arrange(desc(monthly_precip_mm))
-
-monthly_precipitation %>%
-	ggplot(aes(x=month, y=monthly_precip_mm)) +
-		geom_line() +
-		geom_smooth()
-```
+## Rinse, repeat
 
 Let's work on the second question of how typical the weather was on my birth date. To ease into this type of question, let's get the weather in Ann Arbor on the day I was born - June 20, 1976 or 1976-06-20.
 
@@ -364,9 +363,55 @@ daily_temps %>%
 
 
 
-Questions
-* Make a histogram of high temperatures recoded on your birthday and add a vertical line to indicate the temperature of the day you were born.
+## Questions
 
+1\. Which years had the most snowfall? How do the trends in those data look?
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+annual_snowfall <- aa_weather %>%
+	mutate(year = year(date)) %>%
+	group_by(year) %>%
+	summarize(annual_snowfall_mm = sum(snow_fall_mm, na.rm=TRUE)) %>%
+	filter(year != 1891 & year != 2020)
+
+annual_snowfall %>%
+	arrange(desc(annual_snowfall_mm))
+
+annual_snowfall %>%
+	ggplot(aes(x=year, y=annual_snowfall_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+</div>
+
+2\. Which months have the most precipitation?
+
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+monthly_precipitation <- aa_weather %>%
+	mutate(month = month(date)) %>%
+	group_by(month) %>%
+	summarize(monthly_precip_mm = sum(total_precip_mm, na.rm=TRUE)) %>%
+	filter(month != 1891 & month != 2020)
+
+monthly_precipitation %>%
+	arrange(desc(monthly_precip_mm))
+
+monthly_precipitation %>%
+	ggplot(aes(x=month, y=monthly_precip_mm)) +
+		geom_line() +
+		geom_smooth()
+```
+</div>
+
+3\. Make a histogram of high temperatures recoded on your birthday and add a vertical line to indicate the temperature of the day you were born.
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
 	mutate(month = month(date),
@@ -376,9 +421,12 @@ aa_weather %>%
 		geom_histogram(binwidth=3) +
 		geom_vline(xintercept=24.4)
 ```
+</div>
 
-* Make a line plot of the average daily high temperature
+4\. Make a line plot of the average daily high temperature
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
 	mutate(year = year(date), month = month(date)) %>%
@@ -388,9 +436,12 @@ aa_weather %>%
 	ggplot(aes(x=year, y=t_mean_c)) +
 		geom_line()
 ```
+</div>
 
-* Make a scatter plot of the total yearly precipitation on the y-axis and the average annual high temperature on the x-axis. Plot the year using the color aesthetic.
+5\. Make a scatter plot of the total yearly precipitation on the y-axis and the average annual high temperature on the x-axis. Plot the year using the color aesthetic.
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
 	mutate(year = year(date)) %>%
@@ -401,3 +452,4 @@ aa_weather %>%
 	ggplot(aes(x=t_mean_c, y=annual_precip_mm, color=year)) +
 		geom_point()
 ```
+</div>
