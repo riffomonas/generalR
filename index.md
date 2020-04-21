@@ -85,7 +85,10 @@ title: generalR
 
 	<li><a href="10_session.html">Weather data: Session 10</a></li>
 	<ul>
-		<li></li>
+		<li>Critiquing visualizations</li>
+		<li>Highlighting data: factors revisited</li>
+		<li>Setting labels in a visualization</li>
+		<li>Themes</li>
 	</ul>
 
 	<li><a href="11_session.html">IPEDS: Session 11</a></li>

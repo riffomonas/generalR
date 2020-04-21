@@ -5,8 +5,10 @@ output: markdown_document
 ---
 
 ## Topics
-*
-
+* Critiquing visualizations
+* Highlighting data: factors revisited
+* Setting labels in a visualization
+* Themes
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
@@ -24,11 +26,31 @@ opts_chunk$set("fig.show" = "hold")
 opts_chunk$set("fig.width" = 7)
 ```
 
+## Critiquing visualizations
+
 The plots we've been making are interesting, but they aren't the quality of a figure that you'd want to publish or even tweet out to your friends. Let's work with a few figures to see if we can make them more attractive.
 
 We'll start with this code chunk
 
 ```{r}
+library(tidyverse)
+library(lubridate)
+
+aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
+	select(DATE, starts_with("T"), PRCP, SNOW, SNWD) %>%
+	rename("date" = "DATE",
+		"t_max_c" = "TMAX",
+		"t_min_c" = "TMIN",
+		"t_obs_c" = "TOBS",
+		"total_precip_mm" = "PRCP",
+		"snow_fall_mm" = "SNOW",
+		"snow_depth_mm" = "SNWD") %>%
+	mutate(t_obs_c = ifelse(t_obs_c > 40 | t_obs_c < -40, NA, t_obs_c),
+		total_precip_mm = ifelse(total_precip_mm > 250, NA, total_precip_mm),
+		snow_fall_mm = ifelse(snow_fall_mm > 500, NA, snow_fall_mm),
+		snow_depth_mm = ifelse(snow_depth_mm > 500, NA, snow_depth_mm)
+	)
+
 aa_weather %>%
 	mutate(year = year(date), month = month(date)) %>%
 	group_by(year, month) %>%
@@ -49,6 +71,9 @@ Here's my list
 * The gridded background is meh.
 
 Great, we can work with that list. By the end of this lesson, we'll see how to fix each of these problems.
+
+
+## Highlighting data: factors revisited
 
 I'd like to plot all of the lines in a muted color, but have the line for 1976 or any other year pop out at the viewer. There are packages to help you with this, but by doing it ourselves we can reinforce a few concepts we've already seen. We'll start with making a new column in the data frame that indicates which data are from the highlighted year and which are not. We'll do this with the `mutate` and `ifelse` functions
 
@@ -146,6 +171,9 @@ aa_weather %>%
 			values=c("gray", "blue"))
 ```
 
+
+## Setting labels in a visualization
+
 Next we can take on the axis labels using the `labels` function
 
 ```{r}
@@ -163,7 +191,7 @@ aa_weather %>%
 			breaks=c(FALSE, TRUE),
 			labels=c("Other years", "1976"),
 			values=c("gray", "blue")) +
-		labs(x="Month", y="Temperature (C)")
+		labs(x="Month", y="Temperature (\u00B0C)") # \u00B0 is unicode for the degree sign
 ```
 
 We can also give the plot a title, subtitle, and caption using the `labs` function
@@ -184,7 +212,7 @@ aa_weather %>%
 			labels=c("Other years", "1976"),
 			values=c("gray", "blue")) +
 		labs(x="Month",
-			y="Temperature (C)",
+			y="Temperature (\u00B0C)",
 			title="Temperatures in 1976 were warmer in the Spring and cooler in the Fall\nrelative to other years",
 			subtitle="Average high temperature, by month, for Ann Arbor, MI in 1976",
 			caption="Data from Station GHCND:USC00200230")
@@ -208,7 +236,7 @@ aa_weather %>%
 			labels=c("Other years", "1976"),
 			values=c("gray", "blue")) +
 		labs(x="Month",
-			y="Temperature (C)",
+			y="Temperature (\u00B0C)",
 			title="Temperatures in 1976 were warmer in the Spring and cooler in the Fall\nrelative to other years",
 			subtitle="Average high temperature, by month, for Ann Arbor, MI in 1976",
 			caption="Data from Station GHCND:USC00200230") +
@@ -216,6 +244,9 @@ aa_weather %>%
 ```
 
 We could fiddle with how many labels to put on the x-axis. The tradeoff is how to provide sufficient context without making the labels too crowded. Regardless, I think this looks much nicer than using numbers.
+
+
+## Themes
 
 The final point I listed that needed improvement was the background with gridlines. I'm not a big fan of these default settings. We saw with the Project Tycho data that we can change these types of settings using "themes". Previously, we used `theme_classic`
 
@@ -235,7 +266,7 @@ aa_weather %>%
 			labels=c("Other years", "1976"),
 			values=c("gray", "blue")) +
 		labs(x="Month",
-			y="Temperature (C)",
+			y="Temperature (\u00B0C)",
 			title="Temperatures in 1976 were warmer in the Spring and cooler in the Fall\nrelative to other years",
 			subtitle="Average high temperature, by month, for Ann Arbor, MI since 1891",
 			caption="Data from Station GHCND:USC00200230") +
@@ -243,8 +274,7 @@ aa_weather %>%
 		theme_classic()
 ```
 
-Questions
-* Can you modify the x-axis to include a three letter abbreviation for each month? Can you label the y-axis to increment by 5 C steps? You don't need to provide the values for the `labels` argument if they're the same as those for the `breaks` argument.
+While many people would prefer to get a figure looking "good enough" and then tweak the styling in Illustrator, this is not ideal. I can't tell you how many times I've done this only have to repeat the tedious process because the data change or because I need to change something in the original figure. With a little patience and a lot of google, you can modify any part of the figure that you would like so that the output is ready for publication. If you read through `?theme` you can find the different ways to modify the styling of a figure. As just a taste, let's change the size and color of our titles and the size of the text on the axes
 
 ```{r}
 aa_weather %>%
@@ -262,7 +292,72 @@ aa_weather %>%
 			labels=c("Other years", "1976"),
 			values=c("gray", "blue")) +
 		labs(x="Month",
-			y="Temperature (C)",
+			y="Temperature (\u00B0C)",
+			title="Temperatures in 1976 were warmer in the\nSpring and cooler in the Fall relative\nto other years",
+			subtitle="Average high temperature, by month, for Ann Arbor, MI since 1891",
+			caption="Data from Station GHCND:USC00200230") +
+		scale_x_continuous(breaks=c(1, 4, 7, 10), labels=c("Jan", "Apr", "Jul", "Oct")) +
+		theme_classic() +
+		theme(
+			plot.title = element_text(color = "red", size = 20, face = "bold"),
+			plot.subtitle = element_text(color = "gray"),
+			plot.caption = element_text(color = "dodgerblue", face = "italic", hjust=0),
+			axis.text = element_text(size=15),
+			axis.title = element_text(size=18)
+		)
+```
+
+In fact, you might find a set of theme settings that you prefer. You might imagine a company wanting the colors and fonts in their figures to match the color and font schemes of their company branding. Once you have found that set of theme settings, you can define your own theme (e.g. `theme_classic`, `theme_gray`). Many examples of extra ggplot themes are available in the [`ggthemes` package](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/). To close this section, let's install `ggthemes` and use it to theme our figure with **inspiration** from [Five Thirty Eight](https://fivethirtyeight.com).
+
+```{r}
+#install.packages("ggthemes") # only need to run this the first time
+library("ggthemes")
+
+aa_weather %>%
+	mutate(year = year(date), month = month(date)) %>%
+	group_by(year, month) %>%
+	summarize(t_mean_c = mean(t_max_c, na.rm=T)) %>%
+	ungroup() %>%
+	filter(year != 1891 & year != 2020) %>%
+	mutate(highlight=(year == 1976),
+		year=fct_reorder(as_factor(year), highlight)) %>%
+	ggplot(aes(x=month, y=t_mean_c, group=year, color=highlight)) +
+		geom_line(show.legend=FALSE) +
+		scale_color_manual(name="Highlighted",
+			breaks=c(FALSE, TRUE),
+			labels=c("Other years", "1976"),
+			values=c("gray", "blue")) +
+		labs(x="Month",
+			y="Temperature (\u00B0C)",
+			title="Temperatures in 1976 were warmer in the Spring and\ncooler in the Fall relative to other years",
+			subtitle="Average high temperature, by month, for Ann Arbor, MI since 1891",
+			caption="Data from Station GHCND:USC00200230") +
+		scale_x_continuous(breaks=c(1, 4, 7, 10), labels=c("Jan", "Apr", "Jul", "Oct")) +
+		theme_fivethirtyeight()
+```
+
+## Questions
+1\. Can you modify the x-axis to include a three letter abbreviation for each month? Can you label the y-axis to increment by 5 C steps? You don't need to provide the values for the `labels` argument if they're the same as those for the `breaks` argument.
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```{r}
+aa_weather %>%
+	mutate(year = year(date), month = month(date)) %>%
+	group_by(year, month) %>%
+	summarize(t_mean_c = mean(t_max_c, na.rm=T)) %>%
+	ungroup() %>%
+	filter(year != 1891 & year != 2020) %>%
+	mutate(highlight=(year == 1976),
+		year=fct_reorder(as_factor(year), highlight)) %>%
+	ggplot(aes(x=month, y=t_mean_c, group=year, color=highlight)) +
+		geom_line(show.legend=FALSE) +
+		scale_color_manual(name="Highlighted",
+			breaks=c(FALSE, TRUE),
+			labels=c("Other years", "1976"),
+			values=c("gray", "blue")) +
+		labs(x="Month",
+			y="Temperature (\u00B0C)",
 			title="Temperatures in 1976 were warmer in the Spring and cooler in the Fall\nrelative to other years",
 			subtitle="Average high temperature, by month, for Ann Arbor, MI since 1891",
 			caption="Data from Station GHCND:USC00200230") +
@@ -270,9 +365,9 @@ aa_weather %>%
 		scale_y_continuous(breaks=c(-5, 0, 5, 10, 15, 20, 25, 30, 35)) +
 		theme_classic()
 ```
+</div>
 
-
-* In the previous lesson, we plotted total annual precipitation against the year. Critique the figure that this generates and see what you can do to make the figure more presentable. Can you figure out how to get your y-axis to extend down to 0? No, we haven't seen this command yet.
+2\. In the previous lesson, we plotted total annual precipitation against the year. Critique the figure that this generates and see what you can do to make the figure more presentable. Can you figure out how to get your y-axis to extend down to 0? No, we haven't seen this command yet.
 
 ```{r}
 aa_weather %>%
@@ -285,7 +380,8 @@ aa_weather %>%
 		geom_smooth()
 ```
 
-
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
 	mutate(year = year(date)) %>%
@@ -305,5 +401,9 @@ aa_weather %>%
 			caption="Data from Station GHCND:USC00200230") +
 		theme_classic()
 ```
+</div>
 
-* Take either data from Project Tycho or the weather data and make an attractive data visualization.
+
+3\. The last question from Session 6 asked you to find weather station data with a long history for one of your favorite places. Use that data to regenerate one of the plots we made in this session.
+
+4\. Take either data from Project Tycho or the weather data and make an attractive data visualization.
