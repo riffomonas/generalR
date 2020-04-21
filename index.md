@@ -62,14 +62,16 @@ title: generalR
 
 	<li><a href="07_session.html">Weather data: Session 7</a></li>
 	<ul>
-		<li>Detecting problems in data/li>
-		<li>Fixing data problems/li>
+		<li>Detecting problems in data</li>
+		<li>Fixing data problems</li>
 		<li>Rinse, repeat</li>
 	</ul>
 
 	<li><a href="08_session.html">Weather data: Session 8</a></li>
 	<ul>
-		<li></li>
+		<li>Creating columns</li>
+		<li>Keeping our code DRY</li>
+		<li>Writing our own functions</li>
 	</ul>
 
 	<li><a href="09_session.html">Weather data: Session 9</a></li>

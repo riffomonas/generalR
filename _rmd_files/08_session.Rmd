@@ -5,7 +5,9 @@ output: markdown_document
 ---
 
 ## Topics
-*
+* Creating columns
+* Keeping our code DRY
+* Writing our own functions
 
 
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
@@ -24,7 +26,7 @@ opts_chunk$set("fig.show" = "hold")
 opts_chunk$set("fig.width" = 7)
 ```
 
-By the end of the last lesson, if you did all of the exercises, you should have come up with something like the code chunk below. Go ahead and copy this into a file called `weather.R` and save the file.
+We've spent the last two lessons "munging" our data to get it to look and behave nicely. If this is the level of detail we need to go to to clean up data from NOAA, can you imagine how much effort might be needed to clean up the data from the last postdoc in your lab?! We generally spend *a lot* of time cleaning up data. Let's start doing something "useful" with these data! By the end of the last lesson, if you did all of the exercises, you should have come up with something like the code chunk below.
 
 ```{r}
 library(tidyverse)
@@ -45,7 +47,7 @@ aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
 	)
 ```
 
-We've spent the last two lessons "munging" our data to get it to look and behave nicely. If this is the level of detail we need to go to to clean up data from NOAA, can you imagine how much effort might be needed to clean up the data from the last postdoc in your lab?! We generally spend *a lot* of time cleaning up data. Let's start doing something "useful" with these data!
+## Creating columns
 
 Can you remember what command we use to either change or create a new column in a data frame? We've seen it a few times already and now we're going to do a deeper dive into using it to help analyze our data. As I showed in the previous lesson, I am a good American: I have little intuition for the metric system. I'd like to make columns that have the temperatures in Fahrenheit and precipitation data in inches. The function we'll use is `mutate` to generate these new columns. In addition, we'll see how to generate our own functions that we can use with `mutate` and many other settings.
 
@@ -67,9 +69,16 @@ aa_weather %>%
 	select(date, starts_with("t_"))
 ```
 
+## Keeping our code DRY
+
 Excellent! There's one problem with this code chunk. We repeat the equation to convert between Celsius and Fahrenheit three times. I could imagine getting data from another station that had other temperature data - soil, dew point, etc. We would repeat this same equation over and over if we wanted to convert to Fahrenheit. Given my proclivity to typos, I can imagine that at least one of these equations would have a typo. That would be a headache. Also, imagine this project takes off and I want to publish it or make it accessible to the public. I probably want to replace my rule of thumb with the actual formula (F = 9/5 * C +32). I would need to replace every instance of the rule of thumb with the actual conversion. Again, more headaches.
 
-There is a principle we like to follow called DRY - don't repeat yourself. We can overcome this repetition by creating a function. We've see a lot of functions already. The last code chunk has at least seven! `%>%`, `=`, `*`, `+`, `mutate`, `select`, and `starts_with`. To create a function we need a special syntax
+There is a principle we like to follow called DRY - don't repeat yourself. We can overcome this repetition by creating a function.
+
+
+## Writing our own functions
+
+We've see a lot of functions already. The last code chunk has at least seven! `%>%`, `=`, `*`, `+`, `mutate`, `select`, and `starts_with`. To create a function we need a special syntax
 
 ```r
 my_function <- function(argument1, argument2, etc.){
@@ -217,17 +226,22 @@ aa_weather %>%
 Again, the strength of DRY code is that it prevents us from inserting typos and allows us to easily change our code in one place and get it updated everywhere that code is used. Although we should always try to be aware of where our code is not DRY, your primary goal should be to get code that works. Once it works, you should go back and DRY it out. This will help you make sure it works correctly and insure that it's easier to maintain.
 
 
-Questions
-* Create a column in `aa_weather` that contains the difference between the day's maximum and minimum temperatures. Be sure to give the column a good name! Include a `select` function call so that you can more easily see the relevant columns
+## Questions
+1\. Create a column in `aa_weather` that contains the difference between the day's maximum and minimum temperatures. Be sure to give the column a good name! Include a `select` function call so that you can more easily see the relevant columns
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
 	mutate(t_diff_c = t_max_c - t_min_c) %>%
 	select(date, t_max_c, t_min_c, t_diff_c)
 ```
+</div>
 
-* Create a function called `mm_to_inches` that converts millimeters to inches. There are 10 millimeters in a centimeter and 2.54 centimeters in an inch. Test it out with a few values like 0, 25.4, 50.8, 101.6, and 40.
+2\. Create a function called `mm_to_inches` that converts millimeters to inches. There are 10 millimeters in a centimeter and 2.54 centimeters in an inch. Test it out with a few values like 0, 25.4, 50.8, 101.6, and 40.
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 ```{r}
 mm_to_inches <- function(mm) {
 
@@ -242,8 +256,12 @@ mm_to_inches(50.8)
 mm_to_inches(101.6)
 mm_to_inches(40)
 ```
+</div>
 
-* Create columns in `aa_weather` that convert the three precipitation-related columns to inches.
+3\. Create columns in `aa_weather` that convert the three precipitation-related columns to inches. You can use `tail()` to get the last rows of a data frame.
+
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
 
 ```{r}
 aa_weather %>%
@@ -253,3 +271,5 @@ aa_weather %>%
 	select(ends_with("_mm"), ends_with("_in")) %>%
 	tail()
 ```
+
+</div>
