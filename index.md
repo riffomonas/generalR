@@ -112,12 +112,15 @@ title: generalR
 		<li>Thinking of our data as paired and redefining tidy</li>
 	</ul>
 
-	<!-- <li><a href="13_session.html">IPEDS: Session 13</a></li>
+	<li><a href="13_session.html">IPEDS: Session 13</a></li>
 	<ul>
-		<li></li>
+		<li>Generalizing an analysis</li>
+		<li>Making a data frame tidy</li>
+		<li>Plotting groups of data</li>
+		<li>Faceting data visualizations</li>
 	</ul>
 
-	<li><a href="14_session.html">IPEDS: Session 14</a></li>
+	<!-- <li><a href="14_session.html">IPEDS: Session 14</a></li>
 	<ul>
 		<li></li>
 	</ul>
