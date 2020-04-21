@@ -226,7 +226,7 @@ aa_weather %>%
 Again, the strength of DRY code is that it prevents us from inserting typos and allows us to easily change our code in one place and get it updated everywhere that code is used. Although we should always try to be aware of where our code is not DRY, your primary goal should be to get code that works. Once it works, you should go back and DRY it out. This will help you make sure it works correctly and insure that it's easier to maintain.
 
 
-## Questions
+## Exercises
 1\. Create a column in `aa_weather` that contains the difference between the day's maximum and minimum temperatures. Be sure to give the column a good name! Include a `select` function call so that you can more easily see the relevant columns
 
 <input type="button" class="hideshow">

@@ -414,7 +414,7 @@ inner_join(um_degrees, award_code, by=c("AWLEVEL"="codevalue")) %>%
 ```
 
 
-## Questions
+## Exercises
 
 1\. Use the `left_join`, `right_join`, and `full_join` functions to merge `animal_sounds` and `animal_legs`. What happens with these functions (and `inner_join`) if you switch the order of `animal_sounds` and `animal_legs` in the arguments to these functions?
 

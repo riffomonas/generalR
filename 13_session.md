@@ -15,7 +15,7 @@ output: markdown_document
 
 ## Generalizing an analysis
 
-In the last lesson we looked at the representation of women among people graduating with a Bachelor's degree at different types of institutions and at the difference in representation of women who graduated from large research extensive universities with a bachelor's degree and a doctorate degree. To achieve this, we used a number of functions we had seen in previous lessons but in a new context: `read_csv`, `read_excel`, `filter`, `group_by`, `summarize`, `select`, `inner_join`, and `arrange`. We also met some new functions including those to plot continuous data against categorical data like `geom_jitter`, `geom_boxplot`, and `geom_violin`. We also learned how to move rows to columns using `pivot_wider`. We put this all to good effect to see some interesting relationships in the data, namely, there's evidence for a "leaky pipeline" as women move from a bachelor's to doctoral degree program. If you did the Questions at the end of the session, you also saw the even larger leaky pipeline among Black and African American individuals.
+In the last lesson we looked at the representation of women among people graduating with a Bachelor's degree at different types of institutions and at the difference in representation of women who graduated from large research extensive universities with a bachelor's degree and a doctorate degree. To achieve this, we used a number of functions we had seen in previous lessons but in a new context: `read_csv`, `read_excel`, `filter`, `group_by`, `summarize`, `select`, `inner_join`, and `arrange`. We also met some new functions including those to plot continuous data against categorical data like `geom_jitter`, `geom_boxplot`, and `geom_violin`. We also learned how to move rows to columns using `pivot_wider`. We put this all to good effect to see some interesting relationships in the data, namely, there's evidence for a "leaky pipeline" as women move from a bachelor's to doctoral degree program. If you did the Exercises at the end of the session, you also saw the even larger leaky pipeline among Black and African American individuals.
 
 In this lesson, I want to build upon these observations to look at the differences for these and other groups of people. Like the exercises, we could repeat the analysis we did for women, substituting each women for each group. That would be tedious and would likely result in a lot of duplicated code (i.e. not DRY!). What we already had was close to what we want, so we'll be building upon those earlier concepts. Here is the code collected together to generate the final figure from the last session.
 
@@ -494,7 +494,7 @@ degree_rates %>%
 <img src="assets/images/13_session//unnamed-chunk-22-1.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" width="504" />
 
 
-## Questions
+## Exercises
 
 1\. The results presented in the last figure were for graduates of research extensive institutions. Can you add the data from research intensive institutions as well? Can you plot the Carnegie classification as the color of the line in your slopegraph?
 

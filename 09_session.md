@@ -664,7 +664,7 @@ daily_temps %>%
 
 
 
-## Questions
+## Exercises
 
 1\. Which years had the most snowfall? How do the trends in those data look?
 

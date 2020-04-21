@@ -200,7 +200,7 @@ aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
 Now we have a data frame, `aa_weather`, that has our cleaned up data. What's better, is that we can throw this code in a new script file and as more data is added to the station, we can rerun the code to clean up the data by the same methods!
 
 
-## Questions
+## Exercises
 
 1\. Perhaps you remember from earlier that we can combine logical questions to make a single filter command. Can you transform our two `filter` functions for finding weird `t_obs_c` values into one?
 

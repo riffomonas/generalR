@@ -99,7 +99,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 Notice a difference? Try this with other lines in the code chunk and see if you can figure out what each line does. Feel free to play with the code by changing argument values. That is how many people, including me, have learned to program in R! You can keep copies of code that works to go back to. You aren't going to break anything by experimenting.
 
 
-## Questions:
+## Exercises:
 1\. What line of code is responsible for generating the line in the plot?
 
 <input type="button" class="hideshow">

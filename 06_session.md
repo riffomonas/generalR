@@ -564,7 +564,7 @@ aa_weather <- read_csv('noaa/USC00200230.csv', col_types="ccDdddddddddd") %>%
 We've done quite a bit here without really "doing anything". But we have! We've made the data easier to work with.
 
 
-## Questions
+## Exercises
 
 1\. What are the strengths and weaknesses of the following variable/column names?
 - `is_cumulative_count`

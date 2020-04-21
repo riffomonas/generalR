@@ -130,7 +130,7 @@ Wonderful, it works! At this point, if we got another error, then we would conti
 
 One final note about running your code and debugging is that if your prompt ever turns from a `>` to a `+` then you've probably left out a parentheses, bracket, brace, or quote mark. To get back to the correct prompt, simultaneously press the `Control` and `c` keys. In Rstudio you can also press the escape key.
 
-## Questions
+## Exercises
 1\. Make the color of the line red and the color of the plotting symbols blue. What do you notice if you switch the order of the `geom_line` and `geom_point` functions?
 
 <input type="button" class="hideshow">

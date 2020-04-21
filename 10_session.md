@@ -363,7 +363,7 @@ aa_weather %>%
 
 <img src="assets/images/10_session//unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="504" />
 
-## Questions
+## Exercises
 1\. Can you modify the x-axis to include a three letter abbreviation for each month? Can you label the y-axis to increment by 5 C steps? You don't need to provide the values for the `labels` argument if they're the same as those for the `breaks` argument.
 
 <input type="button" class="hideshow">

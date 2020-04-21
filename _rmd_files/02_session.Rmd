@@ -208,7 +208,7 @@ ggplot(annual_counts, aes(x=year, y=count, fill=year)) +
 You'll note that we removed `fill="blue"` from `geom_col()` and put `fill=year` into the `aes` function within the `ggplot` function call. In this example, year is a *continuous* variable so we get a gradient of blues. Later we'll see how this changes when the variable is a *categorical* variable.
 
 
-## Questions
+## Exercises
 1\. What aesthetic values are available for use with `geom_point` and `geom_col`?
 
 <input type="button" class="hideshow">

@@ -343,7 +343,7 @@ Things that still might look foreign...
 
 </div>
 
-## Questions
+## Exercises
 1\. New England traditionally consists of Maine, Vermont, New Hampshire, Massachusetts, Rhode Island, and Connecticut. Lyme, Connecticut is the namesake of the disease. Can you modify our code to make a line plot for these states?
 
 <input type="button" class="hideshow">

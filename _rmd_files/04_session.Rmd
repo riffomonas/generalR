@@ -203,7 +203,7 @@ read_csv("project_tycho/US.23502006.csv",
 The output can be a bit painful to wade through. For character data, the output of `summary` tells us that it was character data and the number of values in the data frame. For double and date data, we get the five cardinal values and the mean across the observations. For logical data we get a count of the number of `TRUE`, `FALSE`, and `NA` observations. This view is useful for identifying values that don't make sense. For example if we had a variable for height and it was negative, we'd want to note that and fix the value later.
 
 
-## Questions
+## Exercises
 
 1\. Thinking of the types of data you interact with regularly, what would you represent as a logical, character, double, factor, date?
 

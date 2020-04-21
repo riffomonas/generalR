@@ -498,7 +498,7 @@ doc_degree_rates %>%
 At the most extensive doctorate institution, the percentage of women earning a doctorate degree after earning a bachelor's falls by nearly 6 percentage points or more than 10%.
 
 
-## Questions
+## Exercises
 
 1\. Using `bachelor_demographics`, repeat the analysis we did to compare the fraction of women graduating with bachelor's degrees across Carnegie categories, but use the fraction of "Black or African American" graduates instead. Can you obtain the median rate of "Black or African American" bachelor's degree students for each category and the number of schools in each category?
 
