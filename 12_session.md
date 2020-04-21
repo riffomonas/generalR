@@ -448,30 +448,30 @@ doc_degree_rates %>%
 ## # … with 141 more rows
 ```
 
-It worked - great! You should be able to see that the column names camed from `AWLEVEL` and hte values came from `f_women`. Now we can calculate the difference with a `mutate` function
+It worked - great! You should be able to see that the column names camed from `AWLEVEL` and hte values came from `f_women`. Now we can calculate the percent drop with a `mutate` function
 
 
 ```r
 doc_degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`)
+	mutate(percent_drop = 100*(`05` - `17`)/`05`)
 ```
 
 ```
 ## # A tibble: 151 x 4
-##    INSTNM                               `05`  `17` difference
-##    <chr>                               <dbl> <dbl>      <dbl>
-##  1 University of Alabama at Birmingham 0.600 0.590    0.00961
-##  2 The University of Alabama           0.574 0.5      0.0738 
-##  3 Auburn University                   0.511 0.419    0.0920 
-##  4 Arizona State University-Tempe      0.453 0.407    0.0455 
-##  5 University of Arizona               0.542 0.492    0.0497 
-##  6 University of Arkansas              0.548 0.353    0.195  
-##  7 California Institute of Technology  0.404 0.298    0.105  
-##  8 University of California-Berkeley   0.536 0.414    0.121  
-##  9 University of California-Davis      0.582 0.473    0.109  
-## 10 University of California-Irvine     0.561 0.403    0.159  
+##    INSTNM                               `05`  `17` percent_drop
+##    <chr>                               <dbl> <dbl>        <dbl>
+##  1 University of Alabama at Birmingham 0.600 0.590         1.60
+##  2 The University of Alabama           0.574 0.5          12.9 
+##  3 Auburn University                   0.511 0.419        18.0 
+##  4 Arizona State University-Tempe      0.453 0.407        10.0 
+##  5 University of Arizona               0.542 0.492         9.17
+##  6 University of Arkansas              0.548 0.353        35.6 
+##  7 California Institute of Technology  0.404 0.298        26.0 
+##  8 University of California-Berkeley   0.536 0.414        22.6 
+##  9 University of California-Davis      0.582 0.473        18.7 
+## 10 University of California-Irvine     0.561 0.403        28.3 
 ## # … with 141 more rows
 ```
 
@@ -482,17 +482,17 @@ Finally, we can summarize the median representation for each award level as well
 doc_degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 
 ```
 ## # A tibble: 1 x 3
-##   med_bachelors med_doctorate med_difference
-##           <dbl>         <dbl>          <dbl>
-## 1         0.527         0.465         0.0580
+##   med_bachelors med_doctorate med_drop
+##           <dbl>         <dbl>    <dbl>
+## 1         0.527         0.465     10.7
 ```
 
 At the most extensive doctorate institution, the percentage of women earning a doctorate degree after earning a bachelor's falls by nearly 6 percentage points or more than 10%.
@@ -563,17 +563,17 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 
 ```
 ## # A tibble: 1 x 3
-##   med_bachelors med_doctorate med_difference
-##           <dbl>         <dbl>          <dbl>
-## 1         0.571         0.552         0.0216
+##   med_bachelors med_doctorate med_drop
+##           <dbl>         <dbl>    <dbl>
+## 1         0.571         0.552     4.52
 ```
 
 <img src="assets/images/12_session//unnamed-chunk-30-1.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" width="504" />
@@ -604,17 +604,17 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_bkaa) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 
 ```
 ## # A tibble: 1 x 3
-##   med_bachelors med_doctorate med_difference
-##           <dbl>         <dbl>          <dbl>
-## 1        0.0485        0.0328         0.0145
+##   med_bachelors med_doctorate med_drop
+##           <dbl>         <dbl>    <dbl>
+## 1        0.0485        0.0328     32.2
 ```
 
 <img src="assets/images/12_session//unnamed-chunk-31-1.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" width="504" />
@@ -652,15 +652,15 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_bkaa) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	filter(INSTNM == "University of Michigan-Ann Arbor")
 ```
 
 ```
 ## # A tibble: 1 x 4
-##   INSTNM                             `05`   `17` difference
-##   <chr>                             <dbl>  <dbl>      <dbl>
-## 1 University of Michigan-Ann Arbor 0.0361 0.0343    0.00178
+##   INSTNM                             `05`   `17` percent_drop
+##   <chr>                             <dbl>  <dbl>        <dbl>
+## 1 University of Michigan-Ann Arbor 0.0361 0.0343         4.94
 ```
 
 <img src="assets/images/12_session//unnamed-chunk-32-1.png" title="plot of chunk unnamed-chunk-32" alt="plot of chunk unnamed-chunk-32" width="504" />

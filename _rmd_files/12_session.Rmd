@@ -287,13 +287,13 @@ doc_degree_rates %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women)
 ```
 
-It worked - great! You should be able to see that the column names camed from `AWLEVEL` and hte values came from `f_women`. Now we can calculate the difference with a `mutate` function
+It worked - great! You should be able to see that the column names camed from `AWLEVEL` and hte values came from `f_women`. Now we can calculate the percent drop with a `mutate` function
 
 ```{r}
 doc_degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`)
+	mutate(percent_drop = 100*(`05` - `17`)/`05`)
 ```
 
 Finally, we can summarize the median representation for each award level as well as for the drop in women using `median`. Notice that we are using `summarize` without `group_by`
@@ -302,10 +302,10 @@ Finally, we can summarize the median representation for each award level as well
 doc_degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 
 At the most extensive doctorate institution, the percentage of women earning a doctorate degree after earning a bachelor's falls by nearly 6 percentage points or more than 10%.
@@ -358,10 +358,10 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_women) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_women) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 </div>
 
@@ -389,10 +389,10 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_bkaa) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	summarize(med_bachelors = median(`05`, na.rm=T),
 		med_doctorate = median(`17`, na.rm=T),
-		med_difference = median(difference, na.rm=T))
+		med_drop = median(percent_drop, na.rm=T))
 ```
 </div>
 
@@ -427,7 +427,7 @@ degree_rates %>%
 degree_rates %>%
 	select(INSTNM, AWLEVEL, f_bkaa) %>%
 	pivot_wider(names_from=AWLEVEL, values_from=f_bkaa) %>%
-	mutate(difference = `05` - `17`) %>%
+	mutate(percent_drop = 100*(`05` - `17`)/`05`) %>%
 	filter(INSTNM == "University of Michigan-Ann Arbor")
 ```
 </div>
