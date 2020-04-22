@@ -50,7 +50,7 @@ library(tidyverse)
 library(lubridate)
 
 annual_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year) %>%
@@ -61,8 +61,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 
 ggsave("lyme_disease_annual_counts.pdf", width=6, height=4)
@@ -91,15 +91,15 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 #	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
 Notice a difference? Try this with other lines in the code chunk and see if you can figure out what each line does. Feel free to play with the code by changing argument values. That is how many people, including me, have learned to program in R! You can keep copies of code that works to go back to. You aren't going to break anything by experimenting.
 
 
-## Exercises:
+## Exercises
 1\. What line of code is responsible for generating the line in the plot?
 
 <input type="button" class="hideshow">
