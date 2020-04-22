@@ -252,8 +252,8 @@ You'll note that we removed `fill="blue"` from `geom_col()` and put `fill=year` 
 4\. What happens if we use `color="blue"` rather than `fill="blue"` as a `geom_col` argument? Try using both arguments, but so that `color` and `fill` have different values
 
 <input type="button" class="hideshow">
-It will make the outline of the bar blue rather than the interior of the column
 <div markdown="1" style="display:none;">
+It will make the outline of the bar blue rather than the interior of the column
 </div>
 
 5\. What happens when you try to map the year to the `shape` aesthetic when using `geom_point`? Can you find another aesthetic to map to the year that will work?
