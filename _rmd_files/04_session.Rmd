@@ -53,7 +53,7 @@ If I run the `read_csv` command, I'll get an abbreviated view of the data frame
 
 ```{r}
 read_csv("project_tycho/US.23502006.csv",
-		col_type=cols(PartOfCumulativeCountSeries = col_logical()))
+	col_type=cols(PartOfCumulativeCountSeries = col_logical()))
 ```
 
 You'll get the first 10 rows of the data frame and depending on the size of your screen, you'll get different numbers of columns. You'll also get a listing of the various column names, but without their data. You'll also see an abbreviation between `< >` characters that tells you the type of data you have. For example, `ConditionName` has `<chr>` under it telling you that it's a column that contains "character" or text data. The neighboring column `ConditionSNOMED` has `<dbl>`, which is shorthand for "double", a type of numerical data. We'll discuss this later, but for now, you can see that we are telling `read_csv` that `PartOfCumulativeCountSeries` should be a logical variable.
@@ -254,5 +254,4 @@ read_csv("project_tycho/US.23502006.csv",
 	count(Admin1Name) %>%
 	print(n=Inf)
 ```
-
 </div>

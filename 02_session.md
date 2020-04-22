@@ -34,8 +34,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -49,8 +49,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -95,8 +95,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -111,8 +111,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -129,8 +129,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -147,8 +147,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -169,8 +169,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -187,8 +187,8 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -273,8 +273,8 @@ ggplot(annual_counts, aes(x=year, y=count, shape=year)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 
@@ -293,8 +293,8 @@ ggplot(annual_counts, aes(x=year, y=count, color=year)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990") +
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990") +
 	theme_classic()
 ```
 

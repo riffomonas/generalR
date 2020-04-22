@@ -23,7 +23,7 @@ library(tidyverse)
 library(lubridate)
 
 annual_state_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year, Admin1Name) %>%
@@ -90,7 +90,7 @@ I'd like to return to a line plot to represent these data, but I only want to de
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries, Admin1Name=="MICHIGAN")
 ```
 
@@ -119,7 +119,7 @@ read_csv("project_tycho/US.23502006.csv",
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	filter(Admin1Name=="MICHIGAN")
 ```
@@ -151,7 +151,7 @@ Can you figure out how to know that these commands did what we hoped? If you wer
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries, Admin1Name=="MICHIGAN") %>%
 	count(Admin1Name)
 ```
@@ -168,7 +168,7 @@ In the first example we ask for those rows where `PartOfCumulativeCountSeries` i
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries & Admin1Name=="MICHIGAN") %>%
 	count(Admin1Name)
 ```
@@ -185,7 +185,7 @@ We also often want to ask "or" type questions. For example, "Does this row conta
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	filter(Admin1Name=="PENNSYLVANIA" | Admin1Name=="MICHIGAN" | Admin1Name=="MISSOURI" ) %>%
 	count(Admin1Name)
@@ -205,7 +205,7 @@ It is perfectly acceptable to have two filter lines as we do here. Perhaps you'd
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries & (Admin1Name=="PENNSYLVANIA" | Admin1Name=="MICHIGAN" | Admin1Name=="MISSOURI")) %>%
 	count(Admin1Name)
 ```
@@ -224,7 +224,7 @@ There is a tradeoff between readability and code efficiency, but the key is that
 
 ```r
 annual_state_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries & (Admin1Name=="PENNSYLVANIA" | Admin1Name=="MICHIGAN" | Admin1Name=="MISSOURI")) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year, Admin1Name) %>%
@@ -235,8 +235,8 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Annual number of cases",
-			title="The number of Lyme disease cases continues to increase each year") +
+		y="Annual number of cases",
+		title="The number of Lyme disease cases continues to increase each year") +
 	theme_classic()
 ```
 
@@ -266,7 +266,7 @@ First, `letters` is a variable built into R that contains the 26 lowercase lette
 upper_midwest_states <- c("MICHIGAN", "OHIO", "INDIANA", "WISCONSIN")
 
 annual_state_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
  	filter(Admin1Name %in% upper_midwest_states) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
@@ -278,8 +278,8 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Annual number of cases",
-			title="The number of Lyme disease cases in Wisconsin has been higher\nthan other states in the upper midwest") +
+		y="Annual number of cases",
+		title="The number of Lyme disease cases in Wisconsin has been higher\nthan other states in the upper midwest") +
 	theme_classic()
 ```
 
@@ -296,7 +296,7 @@ We're going to move on to a different dataset in the next section. Before we do,
 states_map <- map_data("state")
 
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year, Admin1Name) %>%
@@ -353,7 +353,7 @@ Things that still might look foreign...
 new_england <- c("MAINE", "VERMONT", "NEW HAMPSHIRE", "MASSACHUSETTS", "RHODE ISLAND", "CONNECTICUT")
 
 annual_state_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
  	filter(Admin1Name %in% new_england) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
@@ -365,8 +365,8 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Annual number of cases",
-			title="Connecticut continues to have a significant number of Lyme Disease cases") +
+		y="Annual number of cases",
+		title="Connecticut continues to have a significant number of Lyme Disease cases") +
 	theme_classic()
 ```
 
@@ -380,7 +380,7 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 
 ```r
 state_counts <- read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	filter(year == 2016) %>%
@@ -391,8 +391,8 @@ ggplot(state_counts, aes(y=Admin1Name, x=count)) +
 	geom_point() +
 	scale_x_continuous(limits=c(0,NA)) +
 	labs(x="Number of cases for 2016",
-			y="",
-			title="Pennsylvania has more cases than any other state") +
+		y=NULL,
+		title="Pennsylvania has more cases than any other state") +
 	theme_classic()
 ```
 
@@ -428,7 +428,7 @@ chartr("ATGC", "TACG", dna)
 states_map <- map_data("state")
 
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year, Admin1Name) %>%
@@ -451,7 +451,7 @@ read_csv("project_tycho/US.23502006.csv",
 states_map <- map_data("state", region = "michigan")
 
 read_csv("project_tycho/US.23502006.csv",
-					col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
 	mutate(year = year(PeriodStartDate+7)) %>%
 	group_by(year, Admin1Name) %>%

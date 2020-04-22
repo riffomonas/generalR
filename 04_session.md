@@ -41,7 +41,7 @@ If I run the `read_csv` command, I'll get an abbreviated view of the data frame
 
 ```r
 read_csv("project_tycho/US.23502006.csv",
-		col_type=cols(PartOfCumulativeCountSeries = col_logical()))
+	col_type=cols(PartOfCumulativeCountSeries = col_logical()))
 ```
 
 ```
@@ -515,5 +515,4 @@ read_csv("project_tycho/US.23502006.csv",
 ## 52 WISCONSIN              870
 ## 53 WYOMING                699
 ```
-
 </div>
