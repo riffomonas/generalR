@@ -71,9 +71,45 @@ ggplot(annual_state_counts, aes(x=year, y=Admin1Name, fill=count)) +
 There's a lot to like about this way of viewing the data over the previous line plot. It's clear that Pennsylvania was the state that exploded with cases. But there's a lot to not like about this approach. If I try to find Michigan, it's hard (for me) to track the row for Michigan across without worrying that I'm looking at Massachusetts or Maryland. Because we suspect that the spread is driven, in part, by geography, we might want to group the states in a more interesting way. It's also hard to visually interpolate the color gradient to know how many cases there are in Michigan, Missouri, or Pennsylvania.
 
 
+## Viewing large datasets - maps
+
+We have state-level data, so let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2010. As a teaser, we'll use the `filter` function to identify those data that were collected in 2010
+
+```{r, fig.height= 4}
+states_map <- map_data("state")
+
+read_csv("project_tycho/US.23502006.csv",
+			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
+	filter(PartOfCumulativeCountSeries) %>%
+	mutate(year = year(PeriodStartDate+7)) %>%
+	group_by(year, Admin1Name) %>%
+	summarize(count = max(CountValue)) %>%
+	filter(year == 2010) %>%
+	ggplot(aes(map_id = tolower(Admin1Name), fill=count)) +
+		geom_map(map=states_map) +
+		expand_limits(x = states_map$long, y = states_map$lat) + #gets the boundaries for lat and long
+		coord_fixed() # makes sure that 10 deg lat == 10 deg long
+```
+
+Take a moment and make a make a list of...
+* Critiques of this map
+* Questions this map raises for you
+
+Here are some of my critiques...
+* Most of the data for the US is uninteresting, could we tighten the limits to look at the the most interesting states?
+* There is missing data that are probably important - where is New York state?
+* Only one year's worth of data (2010)
+* The color gradient leaves a bit to be desired
+
+Here are some of my questions...
+* The data are total counts, it would be better to have a per capita rate for each state
+* What would a map look like for West Nile Virus?
+* Could I generate an animation of the area east of Wisconsin and north of the Mason-Dixon line?
+
+
 ## Simplifying our data frame with `filter`
 
-I'd like to return to a line plot to represent these data, but I only want to depict a handful of states. To do this, we'll need to learn more about the `filter` function. As the name suggests, this function filters the dataset to retain those rows that satisfy values of interest. We've already been using `filter` to retain those rows that are `PartOfCumulativeCountSeries`. This means that the value in `CountValue` column for that row are for the year rather than for a shorter time period (because states vary in how they report the data, I chose to go with these annual data). I can modify the existing `filter` function arguments or call the function again with different arguments. These both give me data for Michigan
+I'd like to return to a line plot to represent these data, but I only want to depict a handful of states. As we saw with our map, we could use `filter` to keep the data from 2010. We can also use `filter` to keep the data from the states that we are interested in. To do this, we'll need to learn more about the `filter` function. As the name suggests, this function filters the dataset to retain those rows that satisfy values of interest. We've already been using `filter` to retain those rows that are `PartOfCumulativeCountSeries`. This means that the value in `CountValue` column for that row are for the year rather than for a shorter time period (because states vary in how they report the data, I chose to go with these annual data). I can modify the existing `filter` function arguments or call the function again with different arguments. These both give me data for Michigan
 
 ```{r}
 read_csv("project_tycho/US.23502006.csv",
@@ -178,52 +214,14 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 	theme_classic()
 ```
 
-
-## Viewing large datasets - maps
-
-We're going to move on to a different dataset in the next section. Before we do, let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2015.
-
-
-```{r, fig.height= 4}
-states_map <- map_data("state")
-
-read_csv("project_tycho/US.23502006.csv",
-			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
-	filter(PartOfCumulativeCountSeries) %>%
-	mutate(year = year(PeriodStartDate+7)) %>%
-	group_by(year, Admin1Name) %>%
-	summarize(count = max(CountValue)) %>%
-	filter(year == 2010) %>%
-	ggplot(aes(map_id = tolower(Admin1Name), fill=count)) +
-		geom_map(map=states_map) +
-		expand_limits(x = states_map$long, y = states_map$lat) + #gets the boundaries for lat and long
-		coord_fixed() # makes sure that 10 deg lat == 10 deg long
-```
-
-Take a moment and make a make a list of...
-* Critiques of this map
-* Questions this map raises for you
-
-Here are some of my critiques...
-* Most of the data for the US is uninteresting, could we tighten the limits to look at the the most interesting states?
-* There is missing data that are probably important - where is New York state?
-* Only one year's worth of data (2010)
-* The color gradient leaves a bit to be desired
-
-Here are some of my questions...
-* The data are total counts, it would be better to have a per capita rate for each state
-* What would a map look like for West Nile Virus?
-* Could I generate an animation of the area east of Wisconsin and north of the Mason-Dixon line?
-
-
 ## Taking stock of where we are
-Before we leave this session, look at the last code chunk we used to generate a map. See if you can make a list of things in the code chunk that you understand, have a good guess at, and are lost on.
+Before we leave this session, look at the code chunks we have used in this lesson to generate various plots. See if you can make a list of things in the code chunk that you understand, have a good guess at, and are lost on.
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
 
 Things we've seen already and discussed...
-* `library`, `<-`, `filter`, `group_by`, `summarize`, `%>%`, `ggplot`, `aes`, `fill`, `+`, `col_logical`
+* `library`, `<-`, `filter`, `group_by`, `summarize`, `%>%`, `ggplot`, `aes`, `fill`, `+`, `col_logical`, `%in%`, `c`
 
 Things you can probably guess at...
 * `map_data`, `tolower`, `geom_map`, `map`
@@ -232,6 +230,9 @@ Things that still might look foreign...
 * `$`, `expand_limits`, `mutate`
 
 </div>
+
+You're doing great. Don't worry, we'll see many of these functions again and help you gain greater confidence using them.
+
 
 ## Exercises
 1\. New England traditionally consists of Maine, Vermont, New Hampshire, Massachusetts, Rhode Island, and Connecticut. Lyme, Connecticut is the namesake of the disease. Can you modify our code to make a line plot for these states?
