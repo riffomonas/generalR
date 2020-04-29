@@ -5,10 +5,16 @@ output: markdown_document
 ---
 
 ## Topics
-*
+* Thinking through questions
+* Finding text with R
+* Adjusting the shape of a data frame
+* More sophisticated text searches
+* Modifying text based on patterns
 
 
 
+
+## Thinking through questions
 
 In the last several sessions, we looked at gender and racial/ethnic representation at pretty granular levels - the level of institution type and particular institutions. I'd like to get a bit more refined and look within a specific set of disciplines. I'm going to start the analysis with "Microbiology". To do this analysis, I need to develop a sense of how the data are reported. A "microbiologist" is a very diverse concept! They can study organisms in any of the three domains of life, viruses, interactions with animals or plants or the natural environment. They can be engineered, host-associated, or natural ecosystems. They can be studied at the gene, protein, organismal, or community level. Depending on the campus, the people that study microbes at these various levels can be one person in a Biology department or 20 in a Microbiology department or 200 across 20 different departments. How we organize data into a framework is critical to the interpretation of our data. We could be the best R programmer in the world, but if we can't get the definitions right, we're toast.
 
@@ -23,6 +29,9 @@ Inspecting the CIP codes in `ipeds/c2018_a.xlsx`, I see that there's some organi
 * 26.0599	Microbiological Sciences and Immunology, Other
 
 Of course, there are Immunologists that don't think much about microbes and there are card carrying microbiologists in general Biology departments and *even* Engineering. This overlap between subdisciplines is why it is a bad idea to aggregate all institutions blindly. A better practice would be to pick peer institutions where one has a better understanding of where a microbiologist would most likely be trained within that institution. In other words, take this analysis with a grain of salt. We're here to learn R, not make grand statements about bias in science.
+
+
+## Finding text with R
 
 This discussion gets us pretty close to figuring out the categories we're interested in, but let's step back and see if we can do a more systematic review of where microbiology shows up in the CIP codes.
 
@@ -242,6 +251,9 @@ microbiology_degrees <- read_csv("ipeds/c2018_a.csv") %>%
 	filter(MAJORNUM == 1 & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17"))
 ```
 
+
+## Adjusting the shape of a data frame
+
 Before we go all the way, let's see how many institutions claimed each type of microbiology for each degree type.
 
 
@@ -409,6 +421,9 @@ micro_degree_counts %>%
 ## # … with 155 more rows
 ```
 
+
+## More sophisticated text searches
+
 Looking through these institutions, it's pretty clear that to have a dedicated microbiology program of any type suggests that the institution is research focused. We can also see that the program to graduate the most doctorates, University of Wisconsin-Madison, only awarded 19 PhDs in 2018. Based on this, it probably doesn't make much sense to compare the representation at individual institutions for a single year. Now that we have a better handle on the data, let's see what the gender representation looks like for microbiologists awarded bachelor's and doctorate degrees in 2018.
 
 
@@ -479,6 +494,9 @@ biology_degrees %>%
 ```
 
 Interesting, it appears that in some fields there is a larger drop in representation of women. The individual number of graduates in each sub discipline are too small to tell us much. However, if we aggregated the data at the "hundredths" place in the CIP code we could look at a broader level that is still more resolved than all of biology.
+
+
+## Modifying text based on patterns
 
 How do we extract "26.05" from "26.0502"? How do we do extract "26.01" from "26.0101" with the same command? We need another function that works with strings - `str_replace`. This function takes a set of strings, a pattern to match, and a replacement value. Here's the brute force way to do it for one CIP code
 

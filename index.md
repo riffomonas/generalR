@@ -120,12 +120,16 @@ title: generalR
 		<li>Faceting data visualizations</li>
 	</ul>
 
-	<!-- <li><a href="14_session.html">IPEDS: Session 14</a></li>
+	<li><a href="14_session.html">IPEDS: Session 14</a></li>
 	<ul>
-		<li></li>
+		<li>Thinking through questions</li>
+		<li>Finding text with R</li>
+		<li>Adjusting the shape of a data frame</li>
+		<li>More sophisticated text searches</li>
+		<li>Modifying text based on patterns</li>
 	</ul>
 
-	<li><a href="15_session.html">IPEDS: Session 15</a></li>
+	<!-- 	<li><a href="15_session.html">IPEDS: Session 15</a></li>
 	<ul>
 		<li></li>
 	</ul> -->
