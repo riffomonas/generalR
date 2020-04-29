@@ -613,7 +613,7 @@ It appears that of all the biology disciplines, microbiology does the best job o
 
 ## Exercises
 
-1\. It is interesting that after microbiology, sub field "26.13" is next in the ranking for retaining women and has more than 60% of its degrees going to women at both levels. What subfields are in that grouping? The worst at retention is "26.07". What field is that?
+1\. It is interesting that after microbiology, sub field "26.13" is next in the ranking for retaining women and has more than 60% of its degrees going to women at both levels. What subfields are in that grouping? The worst at retention is "26.07". Which field is that?
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
@@ -681,7 +681,7 @@ biology_degrees %>%
 		geom_line(show.legend=FALSE) +
 		scale_color_manual(name="Highlighted",
 			breaks=c(FALSE, TRUE),
-			labels=c("Other Institutions", "University of Michigan-Ann Arbor"),
+			labels=c("Other Biology", "Microbiology"),
 			values=c("gray", "blue")) +
 		theme_classic()
 ```
@@ -708,7 +708,7 @@ biology_degrees %>%
 		geom_line(show.legend=FALSE) +
 		scale_color_manual(name="Highlighted",
 			breaks=c(FALSE, TRUE),
-			labels=c("Other Institutions", "University of Michigan-Ann Arbor"),
+			labels=c("Other Biology", "Microbiology"),
 			values=c("gray", "blue")) +
 		theme_classic()
 ```
