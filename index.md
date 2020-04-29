@@ -129,10 +129,14 @@ title: generalR
 		<li>Modifying text based on patterns</li>
 	</ul>
 
-	<!-- 	<li><a href="15_session.html">IPEDS: Session 15</a></li>
+	<li><a href="15_session.html">IPEDS: Session 15</a></li>
 	<ul>
-		<li></li>
-	</ul> -->
+		<li>Thinking through problems</li>
+		<li>Combining data frames</li>
+		<li>DRYing code with functions</li>
+		<li>File operations in R</li>
+		<li>DRYing code with maps</li>
+	</ul>
 
 
 </ol>

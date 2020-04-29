@@ -3,23 +3,18 @@
 _site
 .jekyll-metadata
 
-code/
-figures/
-processed_data/
-
 \.DS_Store
-
-ordination.pdf
-ordination.png
 
 _book/
 _bookdown_files/
 
 .Rproj.user
+*.Rproj
 
 ipeds
+time_series
+institution_analysis
 noaa
 project_tycho
-*.Rproj
 
 *.pdf
