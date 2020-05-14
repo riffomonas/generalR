@@ -374,7 +374,7 @@ ggplot(annual_state_counts, aes(x=year, y=count, color=Admin1Name)) +
 <img src="assets/images/05_session//unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="504" />
 </div>
 
-2\. 2016 was the last year that we have data for in this dataset. Can you make a dot plot with all of the possible `Admin1Name` values on the y-axis, the `count` values on the x-axis for 2016? Give the bars a color that you like.
+2\. 2016 was the last year that we have data for in this dataset. Can you make a dot plot with all of the possible `Admin1Name` values on the y-axis, the `count` values on the x-axis for 2016? Give the dots any color that you like.
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
@@ -389,7 +389,7 @@ state_counts <- read_csv("project_tycho/US.23502006.csv",
 	summarize(count = max(CountValue))
 
 ggplot(state_counts, aes(y=Admin1Name, x=count)) +
-	geom_point() +
+	geom_point(color="dodgerblue") +
 	scale_x_continuous(limits=c(0,NA)) +
 	labs(x="Number of cases for 2016",
 		y=NULL,

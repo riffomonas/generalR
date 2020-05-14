@@ -515,6 +515,72 @@ paste(previous_year, current_year, sep="", collapse='-') #not what we want!
 
 3\. Aggregate the code needed to generate the final line plot from this session as a single R script. Quit and restart R. Run the script. Does the script generate the figure without any errors? Modify the script until it builds the figure from a fresh restart without error.
 
+<input type="button" class="hideshow">
+<div markdown="1" style="display:none;">
+```R
+library(tidyverse)
+
+data <- function(year_stub) {
+
+	url <- paste("https://nces.ed.gov/ipeds/datacenter/data/C", year_stub, "_A.zip", sep="")
+	file <- paste("c", year_stub, "_a.csv", sep="")
+
+	temp <- tempfile() # create a blank temporary file
+	download.file(url, temp) # download the file to temp
+	unzip(temp, file, exdir="time_series") # unzip and read the file we want from the zip file
+	unlink(temp) # toss the temporary file
+
+	return(TRUE) # tells us that everything worked
+}
+
+get_bac_doc_degrees <- function(file_name) {
+
+	year <- file_name %>%
+		str_replace("time_series/c", "") %>%
+		str_replace("_a.csv", "") %>%
+		as.numeric()
+
+	annual_bac_doc_data <- read_csv(file_name) %>%
+		filter(MAJORNUM == 1 & CTOTALT > 0 & (AWLEVEL == "05" | AWLEVEL == "17") & CIPCODE != 99) %>%
+		mutate(year = year)
+
+	return(annual_bac_doc_data)
+}
+
+map_chr(2008:2018, get_completions_data)
+
+csv_files <- paste("time_series/c", 2008:2018, "_a.csv", sep="")
+
+bac_doc_degrees <- map_dfr(csv_files, get_bac_doc_degrees)
+
+degree_ratio_of_ratios <- bac_doc_degrees %>%
+	mutate(cip_prefix = str_replace(CIPCODE, "\\.\\d*", "")) %>%
+	group_by(year, cip_prefix, AWLEVEL) %>%
+	summarize(n_degrees = sum(CTOTALT), f_women = sum(CTOTALW)/sum(CTOTALT)) %>%
+	ungroup() %>%
+	pivot_wider(names_from=c("AWLEVEL", "year"), values_from=c(n_degrees, f_women), values_fill=list(n_degrees=0, f_women=0)) %>%
+	filter(n_degrees_17_2018 > 1000) %>%
+	select(-starts_with("n_degrees")) %>%
+	pivot_longer(cols=starts_with("f_women"), names_to=c("degree", "year"), values_to="f_women", names_pattern="f_women_(\\d\\d)_(\\d\\d\\d\\d)") %>%
+	pivot_wider(names_from="degree", values_from=f_women) %>%
+	mutate(ratio = `17`/`05`,
+				highlight = cip_prefix == "26",
+				cip_prefix = fct_reorder(cip_prefix, highlight))
+
+degree_ratio_of_ratios %>%
+	ggplot(aes(x=year, y=ratio, group=cip_prefix, color=highlight, size=highlight)) +
+		geom_line(show.legend=FALSE) +
+		scale_color_manual(name="Highlighted",
+			breaks=c(FALSE, TRUE),
+			labels=c("Other Fields", "Biology"),
+			values=c("gray", "dodgerblue")) +
+		scale_size_manual(name="Highlighted",
+			breaks=c(FALSE, TRUE),
+			labels=c("Other Fields", "Biology"),
+			values=c(0.5, 2)) +
+		theme_classic()
+```
+
 
 4\. Replicate and modify the code we developed in this session to generate a plot of the number of institutions in each of the major Carnegie categories (i.e. use the `CARNEGIE` variable from Session 12). You should be able to go back to the data from 2004 without an issue. Once you have a plot going back to 2004, see if you can add the data from 2002 and 2003 [Hint: you will need the `rename_all` function]. Remove the non-classified institutions and pick an institution type to highlight based on what story you want to tell with the data. Make the plot attractive.
 
