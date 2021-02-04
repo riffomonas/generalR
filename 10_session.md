@@ -115,7 +115,9 @@ aa_weather %>%
 ```
 
 ```
-## Error: `f` must be a factor (or character vector).
+## Error: Problem with `mutate()` input `year`.
+## ✖ `f` must be a factor (or character vector).
+## ℹ Input `year` is `fct_reorder(year, highlight)`.
 ```
 
 Except this gives us an error that `Error: f must be a factor (or character vector).`. In this case `f` refers to the first argument, which needs to be a factor. We can wrap `year` within `as_factor` to achieve this
@@ -337,7 +339,13 @@ In fact, you might find a set of theme settings that you prefer. You might imagi
 ```r
 #install.packages("ggthemes") # only need to run this the first time
 library("ggthemes")
+```
 
+```
+## Error in library("ggthemes"): there is no package called 'ggthemes'
+```
+
+```r
 aa_weather %>%
 	mutate(year = year(date), month = month(date)) %>%
 	group_by(year, month) %>%
@@ -361,7 +369,9 @@ aa_weather %>%
 		theme_fivethirtyeight()
 ```
 
-<img src="assets/images/10_session//unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="504" />
+```
+## Error in theme_fivethirtyeight(): could not find function "theme_fivethirtyeight"
+```
 
 ## Exercises
 1\. Can you modify the x-axis to include a three letter abbreviation for each month? Can you label the y-axis to increment by 5 C steps? You don't need to provide the values for the `labels` argument if they're the same as those for the `breaks` argument.

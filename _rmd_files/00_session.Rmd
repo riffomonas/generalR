@@ -50,8 +50,9 @@ But really! What should you learn? Depends. What does your research group use? W
 
 ## What you need to do these tutorials...
 Before starting the tutorials, you will need to install a few tools:
-* [R](https://cloud.r-project.org/)
-* [RStudio](https://www.rstudio.com/products/rstudio/download/#download)
+* [R](https://cloud.r-project.org/): These materials have been tested using R version 4.0.3 (2020-10-10)
+* [RStudio](https://www.rstudio.com/products/rstudio/download/#download): These materials have been tested using RStudio version 1.4.1103
+* [Raw data files](https://github.com/riffomonas/generalR_data/releases/latest): Download using the "Source Code (zip)" link. This will download a directory called `generalR_data-0.2` where the "-0.2" is the version number. Make sure the directory is uncompressed and remove the "-0.2" so that you now have a directory called generalR_data. This is super important!
 
 Later, we'll install the [`tidyverse`](https://www.tidyverse.org) package from within RStudio. Go ahead and click on the links for R and RStudio to install them on your computer. You need both.
 
@@ -154,6 +155,8 @@ That upper right panel is where you can type in code. Go ahead and copy and past
 ```R
 library(tidyverse)
 
+r_version <- R.version$version.string
+
 read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/comma-survey/comma-survey.csv") %>%
 	rename(data=`How would you write the following sentence?`) %>%
 	mutate(data=recode(data,
@@ -167,7 +170,8 @@ read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/comma-su
 		geom_col(show.legend=FALSE) +
 		labs(x=NULL,
 			y="Percentage of respondents",
-			title="Is the word 'data' plural or singular?") +
+			title="Is the word 'data' plural or singular?",
+			subtitle=r_version) +
 		theme_classic()
 ```
 

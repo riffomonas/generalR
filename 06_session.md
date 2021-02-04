@@ -44,7 +44,8 @@ read_csv('noaa/USC00200230.csv')
 ```
 
 ```
-## Parsed with column specification:
+## 
+## ── Column specification ────────────────────────────────────────────────────────────────────────────
 ## cols(
 ##   STATION = col_character(),
 ##   NAME = col_character(),
@@ -99,7 +100,8 @@ read_csv('noaa/USC00200230.csv', guess_max = 10000)
 ```
 
 ```
-## Parsed with column specification:
+## 
+## ── Column specification ────────────────────────────────────────────────────────────────────────────
 ## cols(
 ##   STATION = col_character(),
 ##   NAME = col_character(),
@@ -159,7 +161,8 @@ read_csv('noaa/USC00200230.csv', guess_max = Inf)
 ```
 
 ```
-## Parsed with column specification:
+## 
+## ── Column specification ────────────────────────────────────────────────────────────────────────────
 ## cols(
 ##   STATION = col_character(),
 ##   NAME = col_character(),

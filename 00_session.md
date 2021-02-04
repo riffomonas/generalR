@@ -35,9 +35,10 @@ But really! What should you learn? Depends. What does your research group use? W
 
 
 ## What you need to do these tutorials...
-Before starting your first Code Club, you will need to install a few tools:
-* [R](https://cloud.r-project.org/)
-* [RStudio](https://www.rstudio.com/products/rstudio/download/#download)
+Before starting the tutorials, you will need to install a few tools:
+* [R](https://cloud.r-project.org/): These materials have been tested using R version 4.0.3 (2020-10-10)
+* [RStudio](https://www.rstudio.com/products/rstudio/download/#download): These materials have been tested using RStudio version 1.4.1103
+* [Raw data files](https://github.com/riffomonas/generalR_data/releases/latest): Download using the "Source Code (zip)" link. This will download a directory called `generalR_data-0.2` where the "-0.2" is the version number. Make sure the directory is uncompressed and remove the "-0.2" so that you now have a directory called generalR_data. This is super important!
 
 Later, we'll install the [`tidyverse`](https://www.tidyverse.org) package from within RStudio. Go ahead and click on the links for R and RStudio to install them on your computer. You need both.
 
@@ -140,6 +141,8 @@ That upper right panel is where you can type in code. Go ahead and copy and past
 ```R
 library(tidyverse)
 
+r_version <- R.version$version.string
+
 read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/comma-survey/comma-survey.csv") %>%
 	rename(data=`How would you write the following sentence?`) %>%
 	mutate(data=recode(data,
@@ -153,7 +156,8 @@ read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/comma-su
 		geom_col(show.legend=FALSE) +
 		labs(x=NULL,
 			y="Percentage of respondents",
-			title="Is the word 'data' plural or singular?") +
+			title="Is the word 'data' plural or singular?",
+			subtitle=r_version) +
 		theme_classic()
 ```
 
@@ -183,13 +187,13 @@ sessionInfo()
 ```
 
 ```
-## R version 3.6.3 (2020-02-29)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS Mojave 10.14.6
+## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.7
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -198,22 +202,21 @@ sessionInfo()
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] forcats_0.5.0   stringr_1.4.0   dplyr_0.8.4     purrr_0.3.3    
-##  [5] readr_1.3.1     tidyr_1.0.2     tibble_2.1.3    ggplot2_3.2.1  
-##  [9] tidyverse_1.3.0 knitr_1.28      ezknitr_0.6    
+##  [1] forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2     purrr_0.3.4    
+##  [5] readr_1.4.0     tidyr_1.1.2     tibble_3.0.4    ggplot2_3.3.2  
+##  [9] tidyverse_1.3.0 knitr_1.30      ezknitr_0.6    
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.3        cellranger_1.1.0  pillar_1.4.3      compiler_3.6.3   
-##  [5] dbplyr_1.4.2      R.methodsS3_1.8.0 R.utils_2.9.2     tools_3.6.3      
-##  [9] lubridate_1.7.4   jsonlite_1.6.1    evaluate_0.14     lifecycle_0.1.0  
-## [13] nlme_3.1-144      gtable_0.3.0      lattice_0.20-38   pkgconfig_2.0.3  
-## [17] rlang_0.4.5       reprex_0.3.0      cli_2.0.2         rstudioapi_0.11  
-## [21] DBI_1.1.0         haven_2.2.0       xfun_0.12         withr_2.1.2      
-## [25] xml2_1.2.2        httr_1.4.1        fs_1.3.1          hms_0.5.3        
-## [29] generics_0.0.2    vctrs_0.2.3       grid_3.6.3        tidyselect_1.0.0 
-## [33] glue_1.3.1        R6_2.4.1          fansi_0.4.1       readxl_1.3.1     
-## [37] modelr_0.1.6      magrittr_1.5      backports_1.1.5   scales_1.1.0     
-## [41] rvest_0.3.5       assertthat_0.2.1  colorspace_1.4-1  stringi_1.4.6    
-## [45] lazyeval_0.2.2    munsell_0.5.0     broom_0.5.5       crayon_1.3.4     
-## [49] R.oo_1.23.0
+##  [1] Rcpp_1.0.5        cellranger_1.1.0  pillar_1.4.6      compiler_4.0.3   
+##  [5] dbplyr_2.0.0      R.methodsS3_1.8.1 R.utils_2.10.1    tools_4.0.3      
+##  [9] lubridate_1.7.9.2 jsonlite_1.7.1    evaluate_0.14     lifecycle_0.2.0  
+## [13] gtable_0.3.0      pkgconfig_2.0.3   rlang_0.4.9       reprex_0.3.0     
+## [17] cli_2.1.0         rstudioapi_0.13   DBI_1.1.0         haven_2.3.1      
+## [21] xfun_0.19         withr_2.3.0       xml2_1.3.2        httr_1.4.2       
+## [25] fs_1.5.0          generics_0.1.0    vctrs_0.3.5       hms_0.5.3        
+## [29] grid_4.0.3        tidyselect_1.1.0  glue_1.4.2        R6_2.5.0         
+## [33] fansi_0.4.1       readxl_1.3.1      modelr_0.1.8      magrittr_2.0.1   
+## [37] ps_1.4.0          backports_1.2.0   scales_1.1.1      ellipsis_0.3.1   
+## [41] rvest_0.3.6       assertthat_0.2.1  colorspace_2.0-0  stringi_1.5.3    
+## [45] munsell_0.5.0     broom_0.7.2       crayon_1.3.4      R.oo_1.24.0
 ```

@@ -62,7 +62,9 @@ inst_carnegie %>%
 ```
 
 ```
-## Error: Can't join on 'CARNEGIE' x 'codevalue' because of incompatible types (numeric / character)
+## Error: Can't join on `x$CARNEGIE` x `y$CARNEGIE` because of incompatible types.
+## ℹ `x$CARNEGIE` is of type <double>>.
+## ℹ `y$CARNEGIE` is of type <character>>.
 ```
 
 Now we have a new error! In `carnegie_code`, `codevalue` is a character and in `institutions`, `CARNEGIE` is a double or numeric value. We can convert numbers to characters using `as.character` and if the character is a number (e.g. "-2") we can convert it to a number with `as.numeric`. Since we won't be doing any math on these columns, I'd suggest we convert the numbers to characters.

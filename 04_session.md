@@ -102,8 +102,8 @@ read_csv("project_tycho/US.23502006.csv",
 ```
 
 ```
-## Observations: 51,254
-## Variables: 20
+## Rows: 51,254
+## Columns: 20
 ## $ ConditionName               <chr> "Lyme disease", "Lyme disease", "Lyme dis…
 ## $ ConditionSNOMED             <dbl> 23502006, 23502006, 23502006, 23502006, 2…
 ## $ PathogenName                <chr> "Borrelia", "Borrelia", "Borrelia", "Borr…
@@ -157,7 +157,7 @@ read_csv("project_tycho/US.23502006.csv",
 ## 3 Lyme disease         23502006 Borrelia                 138          0
 ## 4 Lyme disease         23502006 Borrelia                 138          0
 ## 5 Lyme disease         23502006 Borrelia                 138          0
-## # … with 5.125e+04 more rows, and 15 more variables: CountryName <chr>,
+## # … with 51,249 more rows, and 15 more variables: CountryName <chr>,
 ## #   CountryISO <chr>, Admin1Name <chr>, Admin1ISO <chr>, Admin2Name <lgl>,
 ## #   CityName <lgl>, PeriodStartDate <date>, PeriodEndDate <date>,
 ## #   PartOfCumulativeCountSeries <lgl>, AgeRange <chr>, Subpopulation <chr>,

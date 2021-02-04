@@ -488,7 +488,10 @@ aa_weather %>%
 ```
 
 ```
-## Error in quantile.default(t_max_c, prob = 0.025): missing values and NaN's not allowed if 'na.rm' is FALSE
+## Error: Problem with `summarise()` input `t_lci_c`.
+## ✖ missing values and NaN's not allowed if 'na.rm' is FALSE
+## ℹ Input `t_lci_c` is `quantile(t_max_c, prob = 0.025)`.
+## ℹ The error occurred in group 42: month = 2, day = 11.
 ```
 
 Here we get an error about `NA` values. Let's go ahead and ignore these in our calculations
