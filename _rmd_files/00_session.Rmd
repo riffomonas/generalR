@@ -49,7 +49,7 @@ But really! What should you learn? Depends. What does your research group use? W
 
 
 ## What you need to do these tutorials...
-Before starting your first Code Club, you will need to install a few tools:
+Before starting the tutorials, you will need to install a few tools:
 * [R](https://cloud.r-project.org/)
 * [RStudio](https://www.rstudio.com/products/rstudio/download/#download)
 
