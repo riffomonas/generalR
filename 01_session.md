@@ -105,7 +105,7 @@ geom_line()
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
-The key is to remove the `theme_classic()` and the `+` at the end of the preceding line
+The key is to put a # before the `theme_classic()` and the before `+` at the end of the preceding line
 
 
 ```r
@@ -114,15 +114,16 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(breaks=c(1990, 1995, 2000, 2005, 2010, 2015)) +
 	labs(x="Year",
-			y="Number of cases",
-			title="The number of Lyme disease cases has been rising since 1990")
+		y="Number of cases",
+		title="The number of Lyme disease cases has been rising since 1990")# +
+	#theme_classic()
 ```
 
 <img src="assets/images/01_session//unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="504" />
 
 </div>
 
-3\. Can you get the plot to show data for 1995, 2005, and 2015?
+3\. Can you get the x-axis labels to only include 1995, 2005, and 2015?
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">

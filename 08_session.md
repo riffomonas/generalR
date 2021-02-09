@@ -123,10 +123,6 @@ You could then call the function like so...
 my_function(argument1=4, argument2=23)
 ```
 
-```
-## Error in my_function(argument1 = 4, argument2 = 23): could not find function "my_function"
-```
-
 This will return a value that you set in the `return` function from when you defined your function. It is a good time to point out we've been a bit loose with how we've called our previous functions so far. For example, previously we ran
 
 ```r
@@ -232,15 +228,33 @@ We can test this with a few temperatures
 
 ```r
 c_to_f(0)
-c_to_f(20)
-c_to_f(30)
-c_to_f(100)
 ```
 
 ```
 ## [1] 30
+```
+
+```r
+c_to_f(20)
+```
+
+```
 ## [1] 70
+```
+
+```r
+c_to_f(30)
+```
+
+```
 ## [1] 90
+```
+
+```r
+c_to_f(100)
+```
+
+```
 ## [1] 230
 ```
 
@@ -359,17 +373,41 @@ mm_to_inches <- function(mm) {
 }
 
 mm_to_inches(0)
-mm_to_inches(25.4)
-mm_to_inches(50.8)
-mm_to_inches(101.6)
-mm_to_inches(40)
 ```
 
 ```
 ## [1] 0
+```
+
+```r
+mm_to_inches(25.4)
+```
+
+```
 ## [1] 1
+```
+
+```r
+mm_to_inches(50.8)
+```
+
+```
 ## [1] 2
+```
+
+```r
+mm_to_inches(101.6)
+```
+
+```
 ## [1] 4
+```
+
+```r
+mm_to_inches(40)
+```
+
+```
 ## [1] 1.574803
 ```
 </div>

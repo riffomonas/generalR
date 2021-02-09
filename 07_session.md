@@ -330,12 +330,25 @@ aa_weather %>%
 
 ```r
 aa_weather %>%
-	mutate(is_freezing = ifelse(t_min_c <= 0, TRUE, FALSE)) %>%
-	ggplot(aes(x=t_obs_c)) +
-		geom_histogram()
+	mutate(is_freezing = ifelse(t_min_c <= 0, TRUE, FALSE))
 ```
 
-<img src="assets/images/07_session//unnamed-chunk-21-1.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" width="504" />
+```
+## # A tibble: 46,650 x 8
+##    date       t_max_c t_min_c t_obs_c total_precip_mm snow_fall_mm snow_depth_mm
+##    <date>       <dbl>   <dbl>   <dbl>           <dbl>        <dbl>         <dbl>
+##  1 1891-10-01    20.6     7.8      NA            NA             NA            NA
+##  2 1891-10-02    26.7    13.9      NA            NA             NA            NA
+##  3 1891-10-03    26.1    16.1      NA            NA             NA            NA
+##  4 1891-10-04    22.8    11.1      NA             7.6           NA            NA
+##  5 1891-10-05    13.9     6.7      NA            NA             NA            NA
+##  6 1891-10-06    14.4     5        NA            NA             NA            NA
+##  7 1891-10-07    10.6     5.6      NA             4.1           NA            NA
+##  8 1891-10-08    13.9     3.3      NA            NA             NA            NA
+##  9 1891-10-09    15       3.9      NA            NA             NA            NA
+## 10 1891-10-10    16.7     5        NA            NA             NA            NA
+## # … with 46,640 more rows, and 1 more variable: is_freezing <lgl>
+```
 </div>
 
 

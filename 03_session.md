@@ -58,9 +58,17 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	theme_classic()
 ```
 
+```
+## Warning: Removed 21 row(s) containing missing values (geom_path).
+```
+
+```
+## Warning: Removed 21 rows containing missing values (geom_point).
+```
+
 <img src="assets/images/03_session//unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="504" />
 
-I've been programming in R for awhile and I really have no idea what that error message means! What strategies could I use to resolve the error? If I just added one line and then got an error, I might look back at that line to see where I messed up the syntax. But if that doesn't work, I could stare intently at the code chunk looking for the error. I could ask a friend to look at it for me. I could complain and say, "R sucks!", toss my laptop and give up. Ok, none of those are particularly productive approaches. One strategy that I find works very well is to slowly build up my code block to see when I get the error message. For example, if I do the following, I get a plot that resembles what I'm going after.
+I've been programming in R for awhile and I really have no idea what these warning messages mean! What strategies could I use to resolve the error? If I just added one line and then got an error, I might look back at that line to see where I messed up the syntax. But if that doesn't work, I could stare intently at the code chunk looking for the error. I could ask a friend to look at it for me. I could complain and say, "R sucks!", toss my laptop and give up. Ok, none of those are particularly productive approaches. One strategy that I find works very well is to slowly build up my code block to see when I get the error message. For example, if I do the following, I get a plot that resembles what I'm going after.
 
 
 ```r
@@ -102,6 +110,14 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_point() +
 	scale_y_continuous(limits=c(0,NA)) +
 	scale_x_continuous(limits=c(1990, 1995, 2000, 2005, 2010, 2015))
+```
+
+```
+## Warning: Removed 21 row(s) containing missing values (geom_path).
+```
+
+```
+## Warning: Removed 21 rows containing missing values (geom_point).
 ```
 
 <img src="assets/images/03_session//unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="504" />

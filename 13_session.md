@@ -639,7 +639,7 @@ At least according to this approach, across all groups, women are more likely th
 </div>
 
 
-4\. Can you "beautify" the faceted plot that we ended with to make it look more attractive?
+4\. Can you "beautify" the faceted plot that we ended with before starting the exercises to make it look more attractive?
 * Fix the x and y-axis labels
 * Use `scale_y_continuous` to change the fractions to percentages at 0, 25, 50, 75, and 100
 * Use `scale_x_discrete` to use text to describe the `AWLEVEL` values

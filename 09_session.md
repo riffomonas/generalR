@@ -67,19 +67,49 @@ library(lubridate) # don't forget to add this to your script for analyzing weath
 
 birth_date <- "1976-06-20"
 year(birth_date) # year
-month(birth_date) # month
-day(birth_date) # day of the month
-wday(birth_date) # day of the week with 1 => Monday
-yday(birth_date) # Julian date
-week(birth_date) # week of the year
 ```
 
 ```
 ## [1] 1976
+```
+
+```r
+month(birth_date) # month
+```
+
+```
 ## [1] 6
+```
+
+```r
+day(birth_date) # day of the month
+```
+
+```
 ## [1] 20
+```
+
+```r
+wday(birth_date) # day of the week with 1 => Monday
+```
+
+```
 ## [1] 1
+```
+
+```r
+yday(birth_date) # Julian date
+```
+
+```
 ## [1] 172
+```
+
+```r
+week(birth_date) # week of the year
+```
+
+```
 ## [1] 25
 ```
 
@@ -548,9 +578,6 @@ Now let's use `filter` to get the information for my birthday and remind ourselv
 ```r
 daily_temps %>%
 	filter(month == 6 & day == 20)
-
-aa_weather %>%
-	filter(date == "1976-06-20")
 ```
 
 ```
@@ -558,6 +585,14 @@ aa_weather %>%
 ##   month   day t_med_c t_lci_c t_uci_c     n
 ##   <dbl> <int>   <dbl>   <dbl>   <dbl> <int>
 ## 1     6    20    27.2    18.9    33.9   128
+```
+
+```r
+aa_weather %>%
+	filter(date == "1976-06-20")
+```
+
+```
 ## # A tibble: 1 x 7
 ##   date       t_max_c t_min_c t_obs_c total_precip_mm snow_fall_mm snow_depth_mm
 ##   <date>       <dbl>   <dbl>   <dbl>           <dbl>        <dbl>         <dbl>

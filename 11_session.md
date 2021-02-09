@@ -424,54 +424,66 @@ inner_join(um_degrees, award_code, by=c("AWLEVEL"="codevalue")) %>%
 ```r
 # only information for shared animals is outputted
 inner_join(animal_sounds, animal_legs, by="animal")
-</div>
 ```
 
 ```
-## Error: <text>:3:1: unexpected '<'
-## 2: inner_join(animal_sounds, animal_legs, by="animal")
-## 3: <
-##    ^
+## # A tibble: 3 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 fish   blub       4
+## 3 pig    oink       0
 ```
+
 
 ```r
 # only information for animals in animal_sounds is outputted; missing get NA
 left_join(animal_sounds, animal_legs, by="animal")
-</div>
 ```
 
 ```
-## Error: <text>:3:1: unexpected '<'
-## 2: left_join(animal_sounds, animal_legs, by="animal")
-## 3: <
-##    ^
+## # A tibble: 4 x 3
+##   animal sound n_legs
+##   <chr>  <chr>  <dbl>
+## 1 cat    meow       4
+## 2 dog    bark      NA
+## 3 fish   blub       4
+## 4 pig    oink       0
 ```
+
 
 ```r
 # only information for animals in animal_legs is outputted; missing get NA
 right_join(animal_sounds, animal_legs, by="animal")
-</div>
 ```
 
 ```
-## Error: <text>:3:1: unexpected '<'
-## 2: right_join(animal_sounds, animal_legs, by="animal")
-## 3: <
-##    ^
+## # A tibble: 4 x 3
+##   animal  sound n_legs
+##   <chr>   <chr>  <dbl>
+## 1 cat     meow       4
+## 2 fish    blub       4
+## 3 pig     oink       0
+## 4 chicken <NA>       2
 ```
+
 
 ```r
 # information from both data frames is outputted; missing get NA
 full_join(animal_sounds, animal_legs, by="animal")
-</div>
 ```
 
 ```
-## Error: <text>:3:1: unexpected '<'
-## 2: full_join(animal_sounds, animal_legs, by="animal")
-## 3: <
-##    ^
+## # A tibble: 5 x 3
+##   animal  sound n_legs
+##   <chr>   <chr>  <dbl>
+## 1 cat     meow       4
+## 2 dog     bark      NA
+## 3 fish    blub       4
+## 4 pig     oink       0
+## 5 chicken <NA>       2
 ```
+
 
 ```r
 # the order of the columns is determined by the order of the data frames

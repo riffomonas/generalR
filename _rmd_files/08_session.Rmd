@@ -95,7 +95,7 @@ There are other ways to write a function that allow you to set default values or
 
 You could then call the function like so...
 
-```{r}
+```{r, eval=FALSE}
 my_function(argument1=4, argument2=23)
 ```
 
@@ -185,7 +185,7 @@ c_to_f <- function(celsius) {
 
 We can test this with a few temperatures
 
-```{r}
+```{r, results="markup"}
 c_to_f(0)
 c_to_f(20)
 c_to_f(30)
@@ -242,7 +242,7 @@ aa_weather %>%
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
-```{r}
+```{r, results="markup"}
 mm_to_inches <- function(mm) {
 
 	inches = mm / 10 / 2.54

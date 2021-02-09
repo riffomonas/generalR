@@ -73,7 +73,8 @@ There's a lot to like about this way of viewing the data over the previous line 
 
 ## Viewing large datasets - maps
 
-We have state-level data, so let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2010. As a teaser, we'll use the `filter` function to identify those data that were collected in 2010
+We have state-level data, so let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2010. As a teaser, we'll use the `filter` function to identify those data that were collected in 2010. Be sure that you have the `maps` package installed before running the following code.
+
 
 ```{r, fig.height= 4}
 states_map <- map_data("state")

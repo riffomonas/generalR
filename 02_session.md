@@ -86,7 +86,7 @@ Let's see how we can manipulate these aesthetics.
 
 ### `color`
 
-The `colors()` function will give you a listing of the "named" colors that are available in R. Enter `colors()` at the prompt in the console. Modify the code chunk below to plug in your favorite colors
+The `colors()` function will give you a listing of the "named" colors that are available in R. Enter `colors()` at the prompt in the console. Modify the code chunk below to plug in your favorite color
 
 
 ```r
@@ -278,13 +278,13 @@ ggplot(annual_counts, aes(x=year, y=count, shape=year)) +
 	theme_classic()
 ```
 
+It gives an error:
+
 ```
-## Error: A continuous variable can not be mapped to shape
+Error: A continuous variable can not be mapped to shape.
 ```
 
-<img src="assets/images/02_session//unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="504" />
-
-It gives an error: **Error: A continuous variable can not be mapped to shape**. Try mapping year to color
+Try mapping year to color
 
 
 ```r

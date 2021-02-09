@@ -541,7 +541,7 @@ bachelor_bkaa %>%
 <img src="assets/images/12_session//unnamed-chunk-29-1.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" width="504" />
 </div>
 
-2\. Generate a slop plot showing the differences in gender representation among graduates awarded bachelors and doctorate degrees using the data from the "Doctoral/Research Universities--Intensive" Carnegie category data. What is the average difference in representation by degree?
+2\. Generate a slope plot showing the differences in gender representation among graduates awarded bachelors and doctorate degrees using the data from the "Doctoral/Research Universities--Intensive" Carnegie category data. What is the average difference in representation by degree?
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">

@@ -71,7 +71,7 @@ To answer each of these questions, we will need to group the data and then do so
 
 As an aside, the date is one of those things that can be written [many different ways](https://xkcd.com/1179/). How do you write it? I was born on June 20, 1976. How do you most naturally write that date? 20 June 1976? 6/20/1976? 20/6/1976? 6/20/1976? There is a standard format that virtually no one outside of data science uses - ISO 8601. It is expressed as "YYYY-MM-DD". You'll notice that the date column follows this standard and so we need to convert our dates to the standard as well - "1976-06-20". If our data are nicely formatted, there's a lot of useful information that we can extract from that date. A handy [cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf) is available to help you with formatting dates, extracting information, and other dates related goodies
 
-```{r}
+```{r, results="markup"}
 library(lubridate) # don't forget to add this to your script for analyzing weather data. I like
 		# to put all of my library functions together at the top of a script
 
@@ -300,7 +300,7 @@ daily_temps <- aa_weather %>%
 
 Now let's use `filter` to get the information for my birthday and remind ourselves of what it was in 1976
 
-```{r}
+```{r, results="markup"}
 daily_temps %>%
 	filter(month == 6 & day == 20)
 

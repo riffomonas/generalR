@@ -85,19 +85,13 @@ There's a lot to like about this way of viewing the data over the previous line 
 
 ## Viewing large datasets - maps
 
-We have state-level data, so let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2010. As a teaser, we'll use the `filter` function to identify those data that were collected in 2010
+We have state-level data, so let's make a map of the data! Below is a code chunk to generate a map of the US with each state color coded by the number of cases reported in 2010. As a teaser, we'll use the `filter` function to identify those data that were collected in 2010. Be sure that you have the `maps` package installed before running the following code.
+
 
 
 ```r
 states_map <- map_data("state")
-```
 
-```
-## Error:   Package `maps` required for `map_data`.
-##   Please install and try again.
-```
-
-```r
 read_csv("project_tycho/US.23502006.csv",
 			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
@@ -111,9 +105,7 @@ read_csv("project_tycho/US.23502006.csv",
 		coord_fixed() # makes sure that 10 deg lat == 10 deg long
 ```
 
-```
-## Error in is.data.frame(map): object 'states_map' not found
-```
+<img src="assets/images/05_session//unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="504" />
 
 Take a moment and make a make a list of...
 * Critiques of this map
@@ -436,14 +428,7 @@ chartr("ATGC", "TACG", dna)
 
 ```r
 states_map <- map_data("state")
-```
 
-```
-## Error:   Package `maps` required for `map_data`.
-##   Please install and try again.
-```
-
-```r
 read_csv("project_tycho/US.23502006.csv",
 			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
@@ -456,9 +441,7 @@ read_csv("project_tycho/US.23502006.csv",
 		expand_limits(x = c(-93, -67), y = c(36.5,47.5))
 ```
 
-```
-## Error in is.data.frame(map): object 'states_map' not found
-```
+<img src="assets/images/05_session//unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="504" />
 </div>
 
 5\. To make things even more interesting, could you make a map for your home/favorite state? You'll need to add an argument to `map_data` so be sure to use `?map_data` to help figure it out.
@@ -468,14 +451,7 @@ read_csv("project_tycho/US.23502006.csv",
 
 ```r
 states_map <- map_data("state", region = "michigan")
-```
 
-```
-## Error:   Package `maps` required for `map_data`.
-##   Please install and try again.
-```
-
-```r
 read_csv("project_tycho/US.23502006.csv",
 			col_type=cols(PartOfCumulativeCountSeries = col_logical())) %>%
 	filter(PartOfCumulativeCountSeries) %>%
@@ -488,7 +464,5 @@ read_csv("project_tycho/US.23502006.csv",
 		expand_limits(x = states_map$long, y = states_map$lat)
 ```
 
-```
-## Error in is.data.frame(map): object 'states_map' not found
-```
+<img src="assets/images/05_session//unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" width="504" />
 </div>

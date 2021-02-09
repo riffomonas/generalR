@@ -253,9 +253,7 @@ aa_weather %>%
 <div markdown="1" style="display:none;">
 ```{r}
 aa_weather %>%
-	mutate(is_freezing = ifelse(t_min_c <= 0, TRUE, FALSE)) %>%
-	ggplot(aes(x=t_obs_c)) +
-		geom_histogram()
+	mutate(is_freezing = ifelse(t_min_c <= 0, TRUE, FALSE))
 ```
 </div>
 

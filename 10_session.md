@@ -339,13 +339,7 @@ In fact, you might find a set of theme settings that you prefer. You might imagi
 ```r
 #install.packages("ggthemes") # only need to run this the first time
 library("ggthemes")
-```
 
-```
-## Error in library("ggthemes"): there is no package called 'ggthemes'
-```
-
-```r
 aa_weather %>%
 	mutate(year = year(date), month = month(date)) %>%
 	group_by(year, month) %>%
@@ -369,9 +363,7 @@ aa_weather %>%
 		theme_fivethirtyeight()
 ```
 
-```
-## Error in theme_fivethirtyeight(): could not find function "theme_fivethirtyeight"
-```
+<img src="assets/images/10_session//unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="504" />
 
 ## Exercises
 1\. Can you modify the x-axis to include a three letter abbreviation for each month? Can you label the y-axis to increment by 5 C steps? You don't need to provide the values for the `labels` argument if they're the same as those for the `breaks` argument.

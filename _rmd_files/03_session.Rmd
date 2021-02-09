@@ -56,7 +56,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 This can also come in handy for debugging. It's important to remember that we don't have to run the entire code chunk at once. Let's assume that I have the following code chunk that produces an error.
 
-```{r, fig.height=0.1}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point() +
@@ -68,16 +68,16 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 	theme_classic()
 ```
 
-I've been programming in R for awhile and I really have no idea what that error message means! What strategies could I use to resolve the error? If I just added one line and then got an error, I might look back at that line to see where I messed up the syntax. But if that doesn't work, I could stare intently at the code chunk looking for the error. I could ask a friend to look at it for me. I could complain and say, "R sucks!", toss my laptop and give up. Ok, none of those are particularly productive approaches. One strategy that I find works very well is to slowly build up my code block to see when I get the error message. For example, if I do the following, I get a plot that resembles what I'm going after.
+I've been programming in R for awhile and I really have no idea what these warning messages mean! What strategies could I use to resolve the error? If I just added one line and then got an error, I might look back at that line to see where I messed up the syntax. But if that doesn't work, I could stare intently at the code chunk looking for the error. I could ask a friend to look at it for me. I could complain and say, "R sucks!", toss my laptop and give up. Ok, none of those are particularly productive approaches. One strategy that I find works very well is to slowly build up my code block to see when I get the error message. For example, if I do the following, I get a plot that resembles what I'm going after.
 
-```{r}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line()
 ```
 
 Note that I can do this by highlighting the code (without the final `+` on the second line!) and then telling Rstudio to run, or by copy and pasting the highlighted code into the R prompt. Let's add another line.
 
-```{r}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point()
@@ -85,7 +85,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 Looks good. Are you also getting the sense that you can use this approach to figure out what each line does? Good! Let's add another line
 
-```{r}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point() +
@@ -94,7 +94,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 And another
 
-```{r, fig.height=0.1}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point() +
@@ -104,7 +104,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 Aha, there's the error! What did I do wrong? From firsthand experience, I know that after I look at a lot of code, it starts to get hard to see my errors. Let's look at `?scale_x_continuous` and see whether we're using `limits` correctly. There I notice under the limits sub-section the following text, "A numeric vector of length two providing limits of the scale". That seems to align with the error message. The `limits` argument wants one or two values, not six. Now that I think about it, I don't really want to set limits to the x-axis, like I do for the y-axis. Rather, I want to tell R where to put the x-axis labels. Looking back through the help page, I see that the argument I really want is `breaks`, "A numeric vector of positions". Let's try that
 
-```{r}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point() +
@@ -114,7 +114,7 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 
 The error goes away. Let's go ahead and add the rest of the code and see if we get the desired output.
 
-```{r}
+```{r, warning=TRUE}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line() +
 	geom_point() +

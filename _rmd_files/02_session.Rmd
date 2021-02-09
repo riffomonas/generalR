@@ -94,7 +94,7 @@ Let's see how we can manipulate these aesthetics.
 
 ### `color`
 
-The `colors()` function will give you a listing of the "named" colors that are available in R. Enter `colors()` at the prompt in the console. Modify the code chunk below to plug in your favorite colors
+The `colors()` function will give you a listing of the "named" colors that are available in R. Enter `colors()` at the prompt in the console. Modify the code chunk below to plug in your favorite color
 
 ```{r}
 ggplot(annual_counts, aes(x=year, y=count)) +
@@ -260,7 +260,7 @@ It will make the outline of the bar blue rather than the interior of the column
 
 <input type="button" class="hideshow">
 <div markdown="1" style="display:none;">
-```{r}
+```{r, eval=FALSE}
 ggplot(annual_counts, aes(x=year, y=count, shape=year)) +
 	geom_point() +
 	scale_y_continuous(limits=c(0,NA)) +
@@ -271,7 +271,13 @@ ggplot(annual_counts, aes(x=year, y=count, shape=year)) +
 	theme_classic()
 ```
 
-It gives an error: **Error: A continuous variable can not be mapped to shape**. Try mapping year to color
+It gives an error:
+
+```
+Error: A continuous variable can not be mapped to shape.
+```
+
+Try mapping year to color
 
 ```{r}
 ggplot(annual_counts, aes(x=year, y=count, color=year)) +
