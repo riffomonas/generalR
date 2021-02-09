@@ -11,5 +11,8 @@ print-%  :
 
 all : $(MD) $(RMD)
 
+functions.png : count_functions.R
+	./count_functions.R
+	
 clean:
 	rm $(MD)
