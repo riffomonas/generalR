@@ -168,8 +168,6 @@ The order of the function calls determines the order of the plotting objects.
 
 2\. Without looking at the other code chunks we've run, see if you can debug the following code chunk using the strategy we outlined above. You should find four typographical errors.
 
-<input type="button" class="hideshow">
-<div markdown="1" style="display:none;">
 ```{r, eval=F}
 ggplot(annual_counts, aes(x=year, y=count)) +
 	geom_line(fill="blue") +
@@ -184,7 +182,6 @@ ggplot(annual_counts, aes(x=year, y=count)) +
 ```{r, eval=FALSE, echo=FALSE}
 "
 ```
-</div>
 
 3\. At [this link](https://raw.githubusercontent.com/riffomonas/generalR_data/master/project_tycho/US.430397002.csv) are data from Project Tycho for West Nile Virus. I saved it for you in the `project_tycho` directory as `US.430397002.csv`. Use those data to generate a line plot showing the number of WNV infections in the US over time.
 
