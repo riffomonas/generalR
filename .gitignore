@@ -18,3 +18,4 @@ noaa
 project_tycho
 
 *.pdf
+Gemfile.lock
